@@ -1,6 +1,6 @@
 import { IsDate, IsNumber, IsString } from 'class-validator';
 
-export class CreatePedidoDto {
+export class CreateDetallePedidoDto {
   @IsString()
   nombre_cliente: string;
 
