@@ -4,6 +4,9 @@ import { AppService } from './app.service';
 import { RestauranteModule } from './restaurante/restaurante.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
+import { MesaModule } from './mesa/mesa.module';
+import { PedidoModule } from './pedido/pedido.module';
+import { DetallePedidoModule } from './detalle_pedido/detalle_pedido.module';
 
 @Module({
   imports: [
@@ -20,6 +23,9 @@ import { ConfigModule } from '@nestjs/config';
       //ssl: { rejectUnauthorized: false },
     }),
     RestauranteModule,
+    MesaModule,
+    PedidoModule,
+    DetallePedidoModule,
   ],
   controllers: [AppController],
   providers: [AppService],
