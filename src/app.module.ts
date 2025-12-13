@@ -7,6 +7,8 @@ import { ConfigModule } from '@nestjs/config';
 import { MesaModule } from './mesa/mesa.module';
 import { PedidoModule } from './pedido/pedido.module';
 import { DetallePedidoModule } from './detalle_pedido/detalle_pedido.module';
+import { UsersModule } from './users/users.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -25,6 +27,8 @@ import { DetallePedidoModule } from './detalle_pedido/detalle_pedido.module';
     RestauranteModule,
     MesaModule,
     PedidoModule,
+    AuthModule,
+    UsersModule,
     DetallePedidoModule,
   ],
   controllers: [AppController],
