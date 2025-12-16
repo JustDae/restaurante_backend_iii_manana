@@ -18,7 +18,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { SuccessResponseDto } from 'src/common/dto/response.dto';
 import { Pagination } from 'nestjs-typeorm-paginate';
-import { User } from './user.entity';
+import { User } from './entities/user.entity';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { QueryDto } from 'src/common/dto/query.dto';

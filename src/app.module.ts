@@ -4,12 +4,8 @@ import { AppService } from './app.service';
 import { RestauranteModule } from './restaurante/restaurante.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
-import { MesaModule } from './mesa/mesa.module';
-import { PedidoModule } from './pedido/pedido.module';
-import { DetallePedidoModule } from './detalle_pedido/detalle_pedido.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
-import { ProductosModule } from './productos/productos.module';
 import { RolModule } from './rol/rol.module';
 
 @Module({
@@ -23,16 +19,13 @@ import { RolModule } from './rol/rol.module';
       password: process.env.DB_PASS,
       database: process.env.DB_NAME,
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
-      synchronize: true,
+      synchronize: process.env.DB_SYNCHRONIZE === 'true',
+      //synchronize: true,
       //ssl: { rejectUnauthorized: false },
     }),
     RestauranteModule,
-    MesaModule,
-    PedidoModule,
     AuthModule,
     UsersModule,
-    DetallePedidoModule,
-    ProductosModule,
     RolModule,
   ],
   controllers: [AppController],
