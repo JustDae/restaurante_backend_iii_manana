@@ -26,14 +26,18 @@ export class RestauranteService {
   }
 
   async update(id: string, updateRestauranteDto: UpdateRestauranteDto) {
-    const Restaurante = await this.RestauranteRepository.findOne({ where: { id } });
+    const Restaurante = await this.RestauranteRepository.findOne({
+      where: { id },
+    });
     if (!Restaurante) return null;
     Object.assign(Restaurante, updateRestauranteDto);
     return this.RestauranteRepository.save(Restaurante);
   }
 
   async remove(id: string) {
-    const Restaurante = await this.RestauranteRepository.findOne({ where: { id } });
+    const Restaurante = await this.RestauranteRepository.findOne({
+      where: { id },
+    });
     if (!Restaurante) return null;
     return this.RestauranteRepository.remove(Restaurante);
   }
