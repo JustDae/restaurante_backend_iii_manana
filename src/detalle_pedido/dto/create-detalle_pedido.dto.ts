@@ -1,4 +1,4 @@
-import { IsDate, IsNumber, IsString } from 'class-validator';
+import { IsDate, IsEmail, IsNumber, IsString } from 'class-validator';
 
 export class CreateDetallePedidoDto {
   @IsString()
@@ -19,7 +19,7 @@ export class CreateDetallePedidoDto {
   @IsString()
   telefono: string;
 
-  @IsString()
+  @IsEmail()
   correo: string;
 
   @IsString()

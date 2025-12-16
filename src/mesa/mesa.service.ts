@@ -9,11 +9,11 @@ export class MesaService {
   }
 
   findAll() {
-    return `This action returns all mesa`;
+    return `[]`;
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} mesa`;
+    return `[]`;
   }
 
   update(id: number, updateMesaDto: UpdateMesaDto) {
