@@ -10,6 +10,7 @@ import { DetallePedidoModule } from './detalle_pedido/detalle_pedido.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { ProductosModule } from './productos/productos.module';
+import { RolModule } from './rol/rol.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { ProductosModule } from './productos/productos.module';
     UsersModule,
     DetallePedidoModule,
     ProductosModule,
+    RolModule,
   ],
   controllers: [AppController],
   providers: [AppService],
