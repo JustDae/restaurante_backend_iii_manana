@@ -11,7 +11,7 @@ import { RestauranteService } from './restaurante.service';
 import { CreateRestauranteDto } from './dto/create-restaurante.dto';
 import { UpdateRestauranteDto } from './dto/update-restaurante.dto';
 
-@Controller('restaurantes')
+@Controller('restaurante')
 export class RestauranteController {
   constructor(private readonly restauranteService: RestauranteService) {}
 
@@ -31,7 +31,10 @@ export class RestauranteController {
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() updateRestauranteDto: UpdateRestauranteDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateRestauranteDto: UpdateRestauranteDto,
+  ) {
     return this.restauranteService.update(id, updateRestauranteDto);
   }
 
