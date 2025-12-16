@@ -4,12 +4,12 @@ import { AppService } from './app.service';
 import { RestauranteModule } from './restaurante/restaurante.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
-import { MesaModule } from './mesa/mesa.module';
 import { PedidoModule } from './pedido/pedido.module';
 import { DetallePedidoModule } from './detalle_pedido/detalle_pedido.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { ProductosModule } from './productos/productos.module';
+import { CategoriesModule } from './categories/categories.module';
 
 @Module({
   imports: [
@@ -26,10 +26,10 @@ import { ProductosModule } from './productos/productos.module';
       //ssl: { rejectUnauthorized: false },
     }),
     RestauranteModule,
-    MesaModule,
     PedidoModule,
     AuthModule,
     UsersModule,
+    CategoriesModule,
     DetallePedidoModule,
     ProductosModule,
   ],
