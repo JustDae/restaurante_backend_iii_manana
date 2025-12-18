@@ -12,6 +12,7 @@ import {
   UseInterceptors,
   UploadedFile,
   InternalServerErrorException,
+  UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -22,18 +23,21 @@ import { User } from './user.entity';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { QueryDto } from 'src/common/dto/query.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
+  @UseGuards(JwtAuthGuard)
   async create(@Body() dto: CreateUserDto) {
     const user = await this.usersService.create(dto);
     return new SuccessResponseDto('User created successfully', user);
   }
 
   @Get()
+  @UseGuards(JwtAuthGuard)
   async findAll(
     @Query() query: QueryDto,
     @Query('isActive') isActive?: string,
@@ -48,7 +52,14 @@ export class UsersController {
       );
     }
 
-    const result = await this.usersService.findAll(query, isActive === 'true');
+    // --- AQUÍ ESTÁ EL CAMBIO ---
+    // Si es undefined, lo dejamos undefined (para traer todos).
+    // Si no, lo convertimos a booleano real.
+    const statusFilter =
+      isActive === undefined ? undefined : isActive === 'true';
+
+    const result = await this.usersService.findAll(query, statusFilter);
+    // ---------------------------
 
     if (!result)
       throw new InternalServerErrorException('Could not retrieve users');
@@ -57,6 +68,7 @@ export class UsersController {
   }
 
   @Get(':id')
+  @UseGuards(JwtAuthGuard)
   async findOne(@Param('id') id: string) {
     const user = await this.usersService.findOne(id);
     if (!user) throw new NotFoundException('User not found');
@@ -64,6 +76,7 @@ export class UsersController {
   }
 
   @Put(':id')
+  @UseGuards(JwtAuthGuard)
   async update(@Param('id') id: string, @Body() dto: UpdateUserDto) {
     const user = await this.usersService.update(id, dto);
     if (!user) throw new NotFoundException('User not found');
@@ -71,6 +84,7 @@ export class UsersController {
   }
 
   @Delete(':id')
+  @UseGuards(JwtAuthGuard)
   async remove(@Param('id') id: string) {
     const user = await this.usersService.remove(id);
     if (!user) throw new NotFoundException('User not found');
@@ -78,6 +92,7 @@ export class UsersController {
   }
 
   @Put(':id/profile')
+  @UseGuards(JwtAuthGuard)
   @UseInterceptors(
     FileInterceptor('profile', {
       storage: diskStorage({
@@ -105,5 +120,4 @@ export class UsersController {
     if (!user) throw new NotFoundException('User not found');
     return new SuccessResponseDto('Profile image updated', user);
   }
-  
 }
