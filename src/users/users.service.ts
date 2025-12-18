@@ -7,6 +7,7 @@ import { User } from './user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { QueryDto } from 'src/common/dto/query.dto';
+import { Rol } from '../rol/entities/rol.entity';
 
 @Injectable()
 export class UsersService {
@@ -18,10 +19,13 @@ export class UsersService {
   async create(createUserDto: CreateUserDto): Promise<User | null> {
     try {
       const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
+
       const user = this.userRepository.create({
         ...createUserDto,
         password: hashedPassword,
+        rol: { id: createUserDto.rolId } as Rol,
       });
+
       return await this.userRepository.save(user);
     } catch (err) {
       console.error('Error creating user:', err);
@@ -36,7 +40,9 @@ export class UsersService {
     try {
       const { page, limit, search, searchField, sort, order } = queryDto;
 
-      const query = this.userRepository.createQueryBuilder('user');
+      const query = this.userRepository
+        .createQueryBuilder('user')
+        .leftJoinAndSelect('user.rol', 'rol');
 
       if (isActive !== undefined) {
         query.andWhere('user.isActive = :isActive', { isActive });
@@ -44,7 +50,6 @@ export class UsersService {
 
       if (search) {
         if (searchField) {
-          // El frontend decide el campo de filtro
           switch (searchField) {
             case 'username':
               query.andWhere('user.username ILIKE :search', {
@@ -56,6 +61,11 @@ export class UsersService {
                 search: `%${search}%`,
               });
               break;
+            case 'rol':
+              query.andWhere('rol.nombre ILIKE :search', {
+                search: `%${search}%`,
+              });
+              break;
             default:
               query.andWhere(
                 '(user.username ILIKE :search OR user.email ILIKE :search)',
@@ -63,7 +73,6 @@ export class UsersService {
               );
           }
         } else {
-          // Búsqueda por defecto si no se envía searchField
           query.andWhere(
             '(user.username ILIKE :search OR user.email ILIKE :search)',
             { search: `%${search}%` },
@@ -72,7 +81,8 @@ export class UsersService {
       }
 
       if (sort) {
-        query.orderBy(`user.${sort}`, (order ?? 'ASC') as 'ASC' | 'DESC');
+        const sortField = sort === 'rol' ? 'rol.nombre' : `user.${sort}`;
+        query.orderBy(sortField, order ?? 'ASC');
       }
 
       return await paginate<User>(query, { page, limit });
@@ -109,7 +119,16 @@ export class UsersService {
         updateUserDto.password = await bcrypt.hash(updateUserDto.password, 10);
       }
 
-      Object.assign(user, updateUserDto);
+      if (updateUserDto.rolId) {
+        user.rol = { id: updateUserDto.rolId } as Rol;
+      }
+
+      const { rolId, ...params } = updateUserDto;
+
+      void rolId;
+
+      Object.assign(user, params);
+
       return await this.userRepository.save(user);
     } catch (err) {
       console.error('Error updating user:', err);
