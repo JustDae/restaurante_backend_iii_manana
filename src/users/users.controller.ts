@@ -51,19 +51,11 @@ export class UsersController {
         'Invalid value for "isActive". Use "true" or "false".',
       );
     }
-
-    // --- AQUÍ ESTÁ EL CAMBIO ---
-    // Si es undefined, lo dejamos undefined (para traer todos).
-    // Si no, lo convertimos a booleano real.
     const statusFilter =
       isActive === undefined ? undefined : isActive === 'true';
-
     const result = await this.usersService.findAll(query, statusFilter);
-    // ---------------------------
-
     if (!result)
       throw new InternalServerErrorException('Could not retrieve users');
-
     return new SuccessResponseDto('Users retrieved successfully', result);
   }
 
