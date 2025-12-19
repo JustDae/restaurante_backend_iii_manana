@@ -6,19 +6,19 @@ export type AuditLogDocument = AuditLog & Document;
 @Schema({ timestamps: true })
 export class AuditLog {
   @Prop({ required: true })
-  action: string; 
+  action: string;
 
   @Prop({ required: true })
-  entity: string; 
+  entity: string;
 
   @Prop()
-  entityId?: string; 
+  entityId?: string;
 
   @Prop()
-  userId?: string; 
+  userId?: string;
 
   @Prop()
-  description?: string; 
+  description?: string;
 }
 
 export const AuditLogSchema = SchemaFactory.createForClass(AuditLog);
