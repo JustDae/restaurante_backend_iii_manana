@@ -1,34 +1,28 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { ReseñasService } from './resenas.service';
-import { CreateReseñaDto } from './dto/create-resena.dto';
-import { UpdateReseñaDto } from './dto/create-contenido.dto';
+import { Controller, Post, Get, Delete, Body, Param } from '@nestjs/common';
+import { ResenasService } from './resenas.service';
+import { CreateResenaDto } from './dto/create-resena.dto';
 
-@Controller('reseñas')
-export class ReseñasController {
-  constructor(private readonly reseñasService: ReseñasService) {}
+@Controller('resenas')
+export class ResenasController {
+  constructor(private readonly service: ResenasService) {}
 
   @Post()
-  create(@Body() createReseñaDto: CreateReseñaDto) {
-    return this.reseñasService.create(createReseñaDto);
+  create(@Body() dto: CreateResenaDto) {
+    return this.service.create(dto);
   }
 
-  @Get()
-  findAll() {
-    return this.reseñasService.findAll();
+  @Get('restaurante/:id')
+  findByRestaurante(@Param('id') id: string) {
+    return this.service.findAllByRestaurante(id);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.reseñasService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateReseñaDto: UpdateReseñaDto) {
-    return this.reseñasService.update(+id, updateReseñaDto);
+  @Get('usuario/:id')
+  findByUsuario(@Param('id') id: string) {
+    return this.service.findAllByUsuario(id);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.reseñasService.remove(+id);
+  eliminar(@Param('id') id: string) {
+    return this.service.eliminar(id);
   }
 }

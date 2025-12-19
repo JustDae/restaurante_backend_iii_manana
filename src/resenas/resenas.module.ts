@@ -1,9 +1,16 @@
 import { Module } from '@nestjs/common';
-import { ReseñasService } from './resenas.service';
-import { ReseñasController } from './resenas.controller';
+import { MongooseModule } from '@nestjs/mongoose';
+import { ResenasService } from './resenas.service';
+import { ResenasController } from './resenas.controller';
+import { Resena, ResenaSchema } from './schemas/resenas.schema';
 
 @Module({
-  controllers: [ReseñasController],
-  providers: [ReseñasService],
+  imports: [
+    MongooseModule.forFeature([
+      { name: Resena.name, schema: ResenaSchema },
+    ]),
+  ],
+  controllers: [ResenasController],
+  providers: [ResenasService],
 })
-export class ReseñasModule {}
+export class ResenasModule {}

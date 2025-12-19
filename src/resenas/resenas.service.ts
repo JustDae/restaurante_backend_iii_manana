@@ -1,26 +1,21 @@
 import { Injectable } from '@nestjs/common';
-import { CreateReseñaDto } from './dto/create-resena.dto';
-import { UpdateReseñaDto } from './dto/create-contenido.dto';
+import { InjectModel } from '@nestjs/typeorm';
+import { Model } from 'typeorm';
+import { Resena, ResenaDocument } from './schemas/resenas.schema';
+import { CreateResenaDto } from './dto/create-resena.dto';
 
 @Injectable()
-export class ReseñasService {
-  create(createReseñaDto: CreateReseñaDto) {
-    return 'This action adds a new reseña';
+export class ResenasService {
+  constructor(
+    @InjectModel(Resena.name)
+    private resenaModel: Model<ResenaDocument>,
+  ) {}
+
+  crear(dto: CreateResenaDto) {
+    return this.resenaModel.create(dto);
   }
 
-  findAll() {
-    return `This action returns all reseñas`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} reseña`;
-  }
-
-  update(id: number, updateReseñaDto: UpdateReseñaDto) {
-    return `This action updates a #${id} reseña`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} reseña`;
+  listar() {
+    return this.resenaModel.find().sort({ fecha: -1 });
   }
 }
