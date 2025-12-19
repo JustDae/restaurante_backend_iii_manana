@@ -16,13 +16,19 @@ export class ProductosService {
 
   async create(dto: CreateProductoDto): Promise<Producto | null> {
     try {
-      const producto = this.productoRepo.create(dto);
+      const { categoryId, ...restoDto } = dto;
+
+      const producto = this.productoRepo.create({
+        ...restoDto,
+        category: { id: categoryId },
+      });
+
       return await this.productoRepo.save(producto);
     } catch (error) {
       console.error('Error creating producto:', error);
       return null;
     }
-  }
+}
 
   async findAll(query: QueryDto): Promise<Pagination<Producto> | null> {
     try {
