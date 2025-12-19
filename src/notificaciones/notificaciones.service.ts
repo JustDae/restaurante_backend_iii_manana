@@ -1,26 +1,38 @@
 import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import {
+  Notificacione,
+  NotificacioneDocument,
+} from './schemas/notificaciones.schema';
 import { CreateNotificacioneDto } from './dto/create-notificacione.dto';
-import { UpdateNotificacioneDto } from './dto/update-notificacione.dto';
 
 @Injectable()
 export class NotificacionesService {
-  create(createNotificacioneDto: CreateNotificacioneDto) {
-    return 'This action adds a new notificacione';
+  constructor(
+    @InjectModel(Notificacione.name)
+    private notificacionModel: Model<NotificacioneDocument>,
+  ) {}
+
+  create(dto: CreateNotificacioneDto) {
+    return this.notificacionModel.create(dto);
   }
 
-  findAll() {
-    return `This action returns all notificaciones`;
+  findAllByUsuario(usuarioId: string) {
+    return this.notificacionModel
+      .find({ usuarioId })
+      .sort({ fecha: -1 });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} notificacione`;
+  marcarComoLeido(id: string) {
+    return this.notificacionModel.findByIdAndUpdate(
+      id,
+      { leido: true },
+      { new: true },
+    );
   }
 
-  update(id: number, updateNotificacioneDto: UpdateNotificacioneDto) {
-    return `This action updates a #${id} notificacione`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} notificacione`;
+  eliminar(id: string) {
+    return this.notificacionModel.findByIdAndDelete(id);
   }
 }

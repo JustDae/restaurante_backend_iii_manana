@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Delete, Body, Param } from '@nestjs/common';
+import { Controller, Post, Get, Delete, Body, Param } from 'typeorm';
 import { ResenasService } from './resenas.service';
 import { CreateResenaDto } from './dto/create-resena.dto';
 

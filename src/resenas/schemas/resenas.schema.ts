@@ -1,5 +1,5 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Prop, Schema, SchemaFactory } from 'typeorm';
+import { Document } from 'typeorm';
 import { Contenido, ContenidoSchema } from './contenido.schema';
 
 @Schema({ timestamps: true })

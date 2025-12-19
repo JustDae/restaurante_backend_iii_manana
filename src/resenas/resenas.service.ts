@@ -6,6 +6,18 @@ import { CreateResenaDto } from './dto/create-resena.dto';
 
 @Injectable()
 export class ResenasService {
+  create(dto: CreateResenaDto) {
+    throw new Error('Method not implemented.');
+  }
+  findAllByRestaurante(id: string) {
+    throw new Error('Method not implemented.');
+  }
+  eliminar(id: string) {
+    throw new Error('Method not implemented.');
+  }
+  findAllByUsuario(id: string) {
+    throw new Error('Method not implemented.');
+  }
   constructor(
     @InjectModel(Resena.name)
     private resenaModel: Model<ResenaDocument>,

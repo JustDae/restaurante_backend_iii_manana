@@ -1,4 +1,16 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateNotificacioneDto } from './create-notificacione.dto';
+import { IsString, IsOptional } from 'class-validator';
 
-export class UpdateNotificacioneDto extends PartialType(CreateNotificacioneDto) {}
+export class CreateContenidoDto {
+  @IsString()
+  titulo: string;
+
+  @IsString()
+  mensaje: string;
+
+  @IsOptional()
+  @IsString()
+  tipo?: string; 
+
+  @IsOptional()
+  @IsString()
+  referenciaId?: string;
