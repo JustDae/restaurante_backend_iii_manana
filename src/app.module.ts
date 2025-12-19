@@ -13,6 +13,7 @@ import { CategoriesModule } from './categories/categories.module';
 import { RolModule } from './rol/rol.module';
 import { AuditLogsModule } from './audit-logs/audit-logs.module';
 import { MongooseModule } from '@nestjs/mongoose';
+import { MesaModule } from './mesa/mesa.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { MongooseModule } from '@nestjs/mongoose';
     ProductosModule,
     RolModule,
     AuditLogsModule,
+    MesaModule,
   ],
   controllers: [AppController],
   providers: [AppService],
