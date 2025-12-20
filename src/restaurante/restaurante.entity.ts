@@ -7,4 +7,16 @@ export class Restaurante {
 
   @Column()
   name: string;
+
+  @Column()
+  direccion: string;
+
+  @Column()
+  telefono: string;
+
+  @Column({ unique: true })
+  ruc: string;
+
+  @Column({ nullable: true })
+  slogan: string;
 }
