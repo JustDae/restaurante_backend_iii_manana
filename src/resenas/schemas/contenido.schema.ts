@@ -1,4 +1,4 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/typeorm';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 @Schema({ _id: false })
 export class Contenido {

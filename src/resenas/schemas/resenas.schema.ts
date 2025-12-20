@@ -1,4 +1,4 @@
-import { Prop, Schema, SchemaFactory } from 'typeorm';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'typeorm';
 import { Contenido, ContenidoSchema } from './contenido.schema';
 
