@@ -11,6 +11,7 @@ import { AuthModule } from './auth/auth.module';
 import { ProductosModule } from './productos/productos.module';
 import { CategoriesModule } from './categories/categories.module';
 import { RolModule } from './rol/rol.module';
+import { FacturaModule } from './factura/factura.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { RolModule } from './rol/rol.module';
     DetallePedidoModule,
     ProductosModule,
     RolModule,
+    FacturaModule,
   ],
   controllers: [AppController],
   providers: [AppService],

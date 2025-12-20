@@ -14,3 +14,4 @@ export class CreateContenidoDto {
   @IsOptional()
   @IsString()
   referenciaId?: string;
+}
