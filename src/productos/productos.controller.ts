@@ -48,21 +48,27 @@ export class ProductosController {
 
   @Get(':id')
   async findOne(@Param('id') id: string) {
-    const producto = await this.productosService.findOne(id);
+    // ⚠️ CAMBIO AQUÍ: Agregamos el '+' para convertir a número
+    const producto = await this.productosService.findOne(+id);
+
     if (!producto) throw new NotFoundException('Producto not found');
     return new SuccessResponseDto('Producto retrieved successfully', producto);
   }
 
   @Put(':id')
   async update(@Param('id') id: string, @Body() dto: UpdateProductoDto) {
-    const producto = await this.productosService.update(id, dto);
+    // ⚠️ CAMBIO AQUÍ: Agregamos el '+'
+    const producto = await this.productosService.update(+id, dto);
+
     if (!producto) throw new NotFoundException('Producto not found');
     return new SuccessResponseDto('Producto updated successfully', producto);
   }
 
   @Delete(':id')
   async remove(@Param('id') id: string) {
-    const producto = await this.productosService.remove(id);
+    // ⚠️ CAMBIO AQUÍ: Agregamos el '+'
+    const producto = await this.productosService.remove(+id);
+
     if (!producto) throw new NotFoundException('Producto not found');
     return new SuccessResponseDto('Producto deleted successfully', producto);
   }

@@ -26,6 +26,7 @@ export class DetallePedidoController {
   @Post()
   async create(@Body() dto: CreateDetallePedidoDto) {
     const detallePedido = await this.detallePedidoService.create(dto);
+
     if (!detallePedido)
       throw new InternalServerErrorException('Failed to create detalle pedido');
 
@@ -58,7 +59,8 @@ export class DetallePedidoController {
 
   @Get(':id')
   async findOne(@Param('id') id: string) {
-    const detallePedido = await this.detallePedidoService.findOne(id);
+    const detallePedido = await this.detallePedidoService.findOne(+id);
+
     if (!detallePedido) throw new NotFoundException('Detalle pedido not found');
 
     return new SuccessResponseDto(
@@ -69,7 +71,8 @@ export class DetallePedidoController {
 
   @Put(':id')
   async update(@Param('id') id: string, @Body() dto: UpdateDetallePedidoDto) {
-    const detallePedido = await this.detallePedidoService.update(id, dto);
+    const detallePedido = await this.detallePedidoService.update(+id, dto);
+
     if (!detallePedido) throw new NotFoundException('Detalle pedido not found');
 
     return new SuccessResponseDto(
@@ -80,7 +83,8 @@ export class DetallePedidoController {
 
   @Delete(':id')
   async remove(@Param('id') id: string): Promise<SuccessResponseDto<string>> {
-    const deleted = await this.detallePedidoService.remove(id);
+    const deleted = await this.detallePedidoService.remove(+id);
+
     if (!deleted) throw new NotFoundException('Detalle pedido not found');
 
     return new SuccessResponseDto('Detalle pedido deleted successfully', id);

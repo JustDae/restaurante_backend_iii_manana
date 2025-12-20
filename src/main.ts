@@ -5,12 +5,11 @@ import { ValidationPipe } from '@nestjs/common'; // <--- 1. IMPORTAR ESTO
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // 2. ACTIVAR LAS VALIDACIONES GLOBALES
   app.useGlobalPipes(
     new ValidationPipe({
-      whitelist: true, // Elimina campos que no estén en el DTO (Seguridad)
-      forbidNonWhitelisted: true, // Lanza error si envían campos extra
-      transform: true, // <--- EL TRUCO: Convierte "1" a 1 automáticamente
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
     }),
   );
 

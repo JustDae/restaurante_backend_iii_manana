@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Restaurante } from './restaurante.entity';
@@ -9,36 +13,39 @@ import { UpdateRestauranteDto } from './dto/update-restaurante.dto';
 export class RestauranteService {
   constructor(
     @InjectRepository(Restaurante)
-    private readonly RestauranteRepository: Repository<Restaurante>,
+    private readonly restauranteRepo: Repository<Restaurante>,
   ) {}
 
-  create(createRestauranteDto: CreateRestauranteDto) {
-    const Restaurante = this.RestauranteRepository.create(createRestauranteDto);
-    return this.RestauranteRepository.save(Restaurante);
+  async create(dto: CreateRestauranteDto) {
+    const existe = await this.restauranteRepo.count();
+    if (existe > 0) {
+      throw new BadRequestException(
+        'Ya existe un perfil de restaurante creado. Usa la opción de actualizar.',
+      );
+    }
+
+    const restaurante = this.restauranteRepo.create(dto);
+    return await this.restauranteRepo.save(restaurante);
   }
 
-  findAll() {
-    return this.RestauranteRepository.find();
+  async findAll() {
+    return await this.restauranteRepo.find();
   }
 
-  findOne(id: string) {
-    return this.RestauranteRepository.findOne({ where: { id } });
+  async findOne(id: number) {
+    const restaurante = await this.restauranteRepo.findOneBy({ id });
+    if (!restaurante) throw new NotFoundException('Restaurante no encontrado');
+    return restaurante;
   }
 
-  async update(id: string, updateRestauranteDto: UpdateRestauranteDto) {
-    const Restaurante = await this.RestauranteRepository.findOne({
-      where: { id },
-    });
-    if (!Restaurante) return null;
-    Object.assign(Restaurante, updateRestauranteDto);
-    return this.RestauranteRepository.save(Restaurante);
+  async update(id: number, dto: UpdateRestauranteDto) {
+    const restaurante = await this.findOne(id);
+    const actualizado = Object.assign(restaurante, dto);
+    return await this.restauranteRepo.save(actualizado);
   }
 
-  async remove(id: string) {
-    const Restaurante = await this.RestauranteRepository.findOne({
-      where: { id },
-    });
-    if (!Restaurante) return null;
-    return this.RestauranteRepository.remove(Restaurante);
+  async remove(id: number) {
+    const restaurante = await this.findOne(id);
+    return await this.restauranteRepo.remove(restaurante);
   }
 }
