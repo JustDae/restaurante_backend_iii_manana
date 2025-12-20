@@ -14,7 +14,7 @@ import { CreateRolDto } from './dto/create-rol.dto';
 import { UpdateRolDto } from './dto/update-rol.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
-@Controller('rol') // O 'roles', como prefieras tu URL
+@Controller('rol')
 export class RolController {
   constructor(private readonly rolService: RolService) {}
 
