@@ -10,6 +10,7 @@ import {
   NotFoundException,
   InternalServerErrorException,
   UseInterceptors,
+  UseGuards,
 } from '@nestjs/common';
 
 import { PedidoService } from './pedido.service';
@@ -20,8 +21,10 @@ import { Pedido } from './entities/pedido.entity';
 import { SuccessResponseDto } from 'src/common/dto/response.dto';
 import { QueryDto } from 'src/common/dto/query.dto';
 import { AuditInterceptor } from 'src/common/interceptors/audit.interceptor';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard'; // 👈 Importa tu guard
 
-@Controller('pedido')
+@Controller('pedidos')
+@UseGuards(JwtAuthGuard)
 export class PedidoController {
   constructor(private readonly pedidoService: PedidoService) {}
 
@@ -30,8 +33,9 @@ export class PedidoController {
   async create(@Body() dto: CreatePedidoDto) {
     const pedido = await this.pedidoService.create(dto);
     if (!pedido)
-      throw new InternalServerErrorException('Failed to create pedido');
-    return new SuccessResponseDto('Pedido created successfully', pedido);
+      throw new InternalServerErrorException('No se pudo crear el pedido');
+
+    return new SuccessResponseDto('Pedido creado exitosamente', pedido);
   }
 
   @Get()
@@ -42,29 +46,31 @@ export class PedidoController {
 
     const result = await this.pedidoService.findAll(query);
     if (!result)
-      throw new InternalServerErrorException('Could not retrieve pedidos');
+      throw new InternalServerErrorException(
+        'No se pudieron obtener los pedidos',
+      );
 
-    return new SuccessResponseDto('Pedidos retrieved successfully', result);
+    return new SuccessResponseDto('Pedidos obtenidos exitosamente', result);
   }
 
   @Get(':id')
   async findOne(@Param('id') id: string) {
     const pedido = await this.pedidoService.findOne(id);
-    if (!pedido) throw new NotFoundException('Pedido not found');
-    return new SuccessResponseDto('Pedido retrieved successfully', pedido);
+    if (!pedido) throw new NotFoundException('Pedido no encontrado');
+    return new SuccessResponseDto('Pedido obtenido exitosamente', pedido);
   }
 
   @Put(':id')
   async update(@Param('id') id: string, @Body() dto: UpdatePedidoDto) {
     const pedido = await this.pedidoService.update(id, dto);
-    if (!pedido) throw new NotFoundException('Pedido not found');
-    return new SuccessResponseDto('Pedido updated successfully', pedido);
+    if (!pedido) throw new NotFoundException('Pedido no encontrado');
+    return new SuccessResponseDto('Pedido actualizado exitosamente', pedido);
   }
 
   @Delete(':id')
   async remove(@Param('id') id: string) {
     const pedido = await this.pedidoService.remove(id);
-    if (!pedido) throw new NotFoundException('Pedido not found');
-    return new SuccessResponseDto('Pedido deleted successfully', pedido);
+    if (!pedido) throw new NotFoundException('Pedido no encontrado');
+    return new SuccessResponseDto('Pedido eliminado exitosamente', pedido);
   }
 }

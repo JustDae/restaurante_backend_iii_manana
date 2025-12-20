@@ -1,17 +1,21 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Factura } from './entities/factura.entity';
 import { CreateFacturaDto } from './dto/create-factura.dto';
 import { UpdateFacturaDto } from './dto/update-factura.dto';
-import { Pedido } from '../pedido/entities/pedido.entity'; 
+import { Pedido } from '../pedido/entities/pedido.entity';
 
 @Injectable()
 export class FacturaService {
   constructor(
     @InjectRepository(Factura)
     private readonly facturaRepo: Repository<Factura>,
-    
+
     @InjectRepository(Pedido)
     private readonly pedidoRepo: Repository<Pedido>,
   ) {}
@@ -22,15 +26,31 @@ export class FacturaService {
       throw new NotFoundException(`El pedido #${dto.pedidoId} no existe.`);
     }
 
-    const existe = await this.facturaRepo.findOneBy({ pedido: { id: dto.pedidoId } });
+    const existe = await this.facturaRepo.findOneBy({
+      pedido: { id: dto.pedidoId },
+    });
     if (existe) throw new BadRequestException('Este pedido ya fue facturado.');
 
+    const totalA_Facturar = Number(pedido.total);
+
+    if (totalA_Facturar <= 0) {
+      throw new BadRequestException(
+        'No se puede generar factura de un pedido con total 0.',
+      );
+    }
+
     const factura = this.facturaRepo.create({
-      ...dto,
+      razonSocial: dto.razonSocial,
+      ruc_cedula: dto.ruc_cedula,
+      total: totalA_Facturar,
       pedido: pedido,
     });
 
-    return await this.facturaRepo.save(factura);
+    const facturaGuardada = await this.facturaRepo.save(factura);
+    pedido.estado = 'PAGADO';
+    await this.pedidoRepo.save(pedido);
+
+    return facturaGuardada;
   }
 
   async findAll() {

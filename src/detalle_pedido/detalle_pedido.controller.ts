@@ -9,6 +9,7 @@ import {
   Query,
   NotFoundException,
   InternalServerErrorException,
+  UseGuards,
 } from '@nestjs/common';
 
 import { DetallePedidoService } from './detalle_pedido.service';
@@ -18,14 +19,18 @@ import { Pagination } from 'nestjs-typeorm-paginate';
 import { DetallePedido } from './entities/detalle_pedido.entity';
 import { SuccessResponseDto } from 'src/common/dto/response.dto';
 import { QueryDto } from 'src/common/dto/query.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
 
 @Controller('detalle-pedido')
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class DetallePedidoController {
   constructor(private readonly detallePedidoService: DetallePedidoService) {}
 
   @Post()
   async create(@Body() dto: CreateDetallePedidoDto) {
     const detallePedido = await this.detallePedidoService.create(dto);
+
     if (!detallePedido)
       throw new InternalServerErrorException('Failed to create detalle pedido');
 
@@ -58,7 +63,8 @@ export class DetallePedidoController {
 
   @Get(':id')
   async findOne(@Param('id') id: string) {
-    const detallePedido = await this.detallePedidoService.findOne(id);
+    const detallePedido = await this.detallePedidoService.findOne(+id);
+
     if (!detallePedido) throw new NotFoundException('Detalle pedido not found');
 
     return new SuccessResponseDto(
@@ -69,7 +75,8 @@ export class DetallePedidoController {
 
   @Put(':id')
   async update(@Param('id') id: string, @Body() dto: UpdateDetallePedidoDto) {
-    const detallePedido = await this.detallePedidoService.update(id, dto);
+    const detallePedido = await this.detallePedidoService.update(+id, dto);
+
     if (!detallePedido) throw new NotFoundException('Detalle pedido not found');
 
     return new SuccessResponseDto(
@@ -80,7 +87,8 @@ export class DetallePedidoController {
 
   @Delete(':id')
   async remove(@Param('id') id: string): Promise<SuccessResponseDto<string>> {
-    const deleted = await this.detallePedidoService.remove(id);
+    const deleted = await this.detallePedidoService.remove(+id);
+
     if (!deleted) throw new NotFoundException('Detalle pedido not found');
 
     return new SuccessResponseDto('Detalle pedido deleted successfully', id);

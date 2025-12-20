@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsNumber, IsPositive, IsInt } from 'class-validator';
+import { IsString, IsNotEmpty, IsUUID } from 'class-validator';
 
 export class CreateFacturaDto {
   @IsString()
@@ -9,11 +9,8 @@ export class CreateFacturaDto {
   @IsNotEmpty()
   ruc_cedula: string;
 
-  @IsNumber()
-  @IsPositive()
-  total: number;
-
-  @IsInt()
-  @IsPositive()
-  pedidoId: number;
+  @IsString()
+  @IsNotEmpty()
+  @IsUUID()
+  pedidoId: string;
 }

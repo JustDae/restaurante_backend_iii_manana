@@ -1,5 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn } from 'typeorm';
-import { Pedido } from '../../pedido/entities/pedido.entity'; 
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToOne,
+  JoinColumn,
+} from 'typeorm';
+import { Pedido } from '../../pedido/entities/pedido.entity';
 
 @Entity('factura')
 export class Factura {
@@ -19,6 +25,6 @@ export class Factura {
   total: number;
 
   @OneToOne(() => Pedido)
-  @JoinColumn()
+  @JoinColumn({ name: 'pedidoId' })
   pedido: Pedido;
 }

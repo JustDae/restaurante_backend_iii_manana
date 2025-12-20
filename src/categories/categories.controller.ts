@@ -9,6 +9,7 @@ import {
   Query,
   NotFoundException,
   InternalServerErrorException,
+  UseGuards,
 } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
@@ -17,8 +18,11 @@ import { Pagination } from 'nestjs-typeorm-paginate';
 import { Category } from './category.entity';
 import { SuccessResponseDto } from 'src/common/dto/response.dto';
 import { QueryDto } from 'src/common/dto/query.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
 
 @Controller('categories')
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
@@ -38,7 +42,15 @@ export class CategoriesController {
       query.limit = 100;
     }
 
-    const result = await this.categoriesService.findAll(query);
+    const result = await this.categoriesService.findAll({
+      page: query.page || 1,
+      limit: query.limit || 10,
+      search: query.search,
+      searchField: query.searchField || 'name',
+      sortBy: query.sort || 'id',
+      sortOrder: (query.order as 'ASC' | 'DESC') || 'ASC',
+      route: 'http://localhost:3000/categories',
+    });
 
     if (!result)
       throw new InternalServerErrorException('Could not retrieve categories');
