@@ -17,6 +17,7 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User | null> {
+    console.log('DTO recibido:', createUserDto);
     try {
       const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
 
@@ -85,7 +86,10 @@ export class UsersService {
         query.orderBy(sortField, order ?? 'ASC');
       }
 
-      return await paginate<User>(query, { page, limit });
+      return await paginate<User>(query, {
+        page: page || 1,
+        limit: limit || 10,
+      });
     } catch (err) {
       console.error('Error retrieving users:', err);
       return null;
