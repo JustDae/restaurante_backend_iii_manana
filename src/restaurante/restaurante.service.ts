@@ -5,9 +5,9 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Restaurante } from './entities/restaurante.entity';
+import { Restaurante } from './restaurante.entity';
 import { CreateRestauranteDto } from './dto/create-restaurante.dto';
-import { UpdateRestauranteDto } from './dto/update-restaurante.dto'; // Asegúrate de que este archivo exista (lo crea el generador)
+import { UpdateRestauranteDto } from './dto/update-restaurante.dto';
 
 @Injectable()
 export class RestauranteService {
@@ -17,7 +17,6 @@ export class RestauranteService {
   ) {}
 
   async create(dto: CreateRestauranteDto) {
-    // REGLA: Solo permitimos crear 1 perfil de restaurante
     const existe = await this.restauranteRepo.count();
     if (existe > 0) {
       throw new BadRequestException(
@@ -40,7 +39,7 @@ export class RestauranteService {
   }
 
   async update(id: number, dto: UpdateRestauranteDto) {
-    const restaurante = await this.findOne(id); // Verifica que exista
+    const restaurante = await this.findOne(id);
     const actualizado = Object.assign(restaurante, dto);
     return await this.restauranteRepo.save(actualizado);
   }

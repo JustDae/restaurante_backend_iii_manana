@@ -1,34 +1,55 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Put,
+  Param,
+  Delete,
+  UseGuards,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { MesaService } from './mesa.service';
 import { CreateMesaDto } from './dto/create-mesa.dto';
 import { UpdateMesaDto } from './dto/update-mesa.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { SuccessResponseDto } from 'src/common/dto/response.dto';
 
 @Controller('mesa')
+@UseGuards(JwtAuthGuard)
 export class MesaController {
   constructor(private readonly mesaService: MesaService) {}
 
   @Post()
-  create(@Body() createMesaDto: CreateMesaDto) {
-    return this.mesaService.create(createMesaDto);
+  async create(@Body() dto: CreateMesaDto) {
+    const data = await this.mesaService.create(dto);
+    return new SuccessResponseDto('Mesa creada correctamente', data);
   }
 
   @Get()
-  findAll() {
-    return this.mesaService.findAll();
+  async findAll() {
+    const data = await this.mesaService.findAll();
+    return new SuccessResponseDto('Listado de mesas', data);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.mesaService.findOne(+id);
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    const data = await this.mesaService.findOne(id);
+    return new SuccessResponseDto('Detalle de mesa', data);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateMesaDto: UpdateMesaDto) {
-    return this.mesaService.update(+id, updateMesaDto);
+  @Put(':id')
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: UpdateMesaDto,
+  ) {
+    const data = await this.mesaService.update(id, dto);
+    return new SuccessResponseDto('Mesa actualizada', data);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.mesaService.remove(+id);
+  async remove(@Param('id', ParseIntPipe) id: number) {
+    const data = await this.mesaService.remove(id);
+    return new SuccessResponseDto('Mesa eliminada', data);
   }
 }
