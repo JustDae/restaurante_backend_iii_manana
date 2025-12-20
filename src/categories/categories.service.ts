@@ -34,7 +34,9 @@ export class CategoriesService {
     }
   }
 
-  async findAll(options: CategoryPaginationOptions): Promise<Pagination<Category>> {
+  async findAll(
+    options: CategoryPaginationOptions,
+  ): Promise<Pagination<Category>> {
     const { search, searchField, sortBy, sortOrder } = options;
     const queryBuilder = this.categoryRepo.createQueryBuilder('category');
     const allowedSearchFields = ['name'];
