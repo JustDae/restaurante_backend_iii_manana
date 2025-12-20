@@ -79,13 +79,10 @@ export class DetallePedidoController {
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string) {
-    const detallePedido = await this.detallePedidoService.remove(id);
-    if (!detallePedido) throw new NotFoundException('Detalle pedido not found');
+  async remove(@Param('id') id: string): Promise<SuccessResponseDto<string>> {
+    const deleted = await this.detallePedidoService.remove(id);
+    if (!deleted) throw new NotFoundException('Detalle pedido not found');
 
-    return new SuccessResponseDto(
-      'Detalle pedido deleted successfully',
-      detallePedido,
-    );
+    return new SuccessResponseDto('Detalle pedido deleted successfully', id);
   }
 }
