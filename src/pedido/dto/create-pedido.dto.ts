@@ -4,6 +4,9 @@ import {
   IsNumber,
   IsOptional,
   IsDateString,
+  IsInt,
+  IsPositive,
+  IsNotEmpty,
 } from 'class-validator';
 
 export class CreatePedidoDto {
@@ -28,4 +31,14 @@ export class CreatePedidoDto {
   @IsNumber()
   @IsOptional()
   total?: number;
+
+  @IsInt()
+  @IsPositive()
+  @IsNotEmpty()
+  mesaId: number;
+
+  @IsInt()
+  @IsPositive()
+  @IsNotEmpty()
+  metodoPagoId: number;
 }

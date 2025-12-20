@@ -20,6 +20,7 @@ export class ProductosService {
 
       const producto = this.productoRepo.create({
         ...restoDto,
+        // Asegúrate que categoryId sea compatible con tu entidad Categoria
         category: { id: categoryId },
       });
 
@@ -28,7 +29,7 @@ export class ProductosService {
       console.error('Error creating producto:', error);
       return null;
     }
-}
+  }
 
   async findAll(query: QueryDto): Promise<Pagination<Producto> | null> {
     try {
@@ -52,7 +53,8 @@ export class ProductosService {
     }
   }
 
-  async findOne(id: string): Promise<Producto | null> {
+  // ⚠️ CAMBIO 1: id ahora es number
+  async findOne(id: number): Promise<Producto | null> {
     try {
       return await this.productoRepo.findOne({ where: { id } });
     } catch (error) {
@@ -61,7 +63,8 @@ export class ProductosService {
     }
   }
 
-  async update(id: string, dto: UpdateProductoDto): Promise<Producto | null> {
+  // ⚠️ CAMBIO 2: id ahora es number
+  async update(id: number, dto: UpdateProductoDto): Promise<Producto | null> {
     try {
       const producto = await this.findOne(id);
       if (!producto) return null;
@@ -74,7 +77,8 @@ export class ProductosService {
     }
   }
 
-  async remove(id: string): Promise<Producto | null> {
+  // ⚠️ CAMBIO 3: id ahora es number
+  async remove(id: number): Promise<Producto | null> {
     try {
       const producto = await this.findOne(id);
       if (!producto) return null;

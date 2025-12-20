@@ -1,27 +1,29 @@
-import { IsDate, IsEmail, IsNumber, IsString } from 'class-validator';
+import {
+  IsInt,
+  IsPositive,
+  IsNotEmpty,
+  IsUUID,
+  IsString,
+  IsOptional,
+} from 'class-validator';
 
 export class CreateDetallePedidoDto {
-  @IsString()
-  nombre_cliente: string;
+  @IsInt()
+  @IsPositive()
+  @IsNotEmpty()
+  productoId: number;
 
-  @IsString()
-  nombre_producto: string;
-
-  @IsString()
-  direccion: string;
-
-  @IsNumber()
+  @IsInt()
+  @IsPositive()
+  @IsNotEmpty()
   cantidad: number;
 
-  @IsDate()
-  fecha_pedido: Date;
+  @IsString()
+  @IsNotEmpty()
+  @IsUUID()
+  pedidoId: string;
 
   @IsString()
-  telefono: string;
-
-  @IsEmail()
-  correo: string;
-
-  @IsString()
-  estado: string;
+  @IsOptional()
+  observaciones?: string;
 }
