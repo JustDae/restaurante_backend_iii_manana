@@ -11,6 +11,7 @@ import { AuthModule } from './auth/auth.module';
 import { ProductosModule } from './productos/productos.module';
 import { CategoriesModule } from './categories/categories.module';
 import { RolModule } from './rol/rol.module';
+import { FacturaModule } from './factura/factura.module';
 import { AuditLogsModule } from './audit-logs/audit-logs.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { MesaModule } from './mesa/mesa.module';
@@ -39,6 +40,7 @@ import { MetodoPagoModule } from './metodo-pago/metodo-pago.module';
     DetallePedidoModule,
     ProductosModule,
     RolModule,
+    FacturaModule,
     AuditLogsModule,
     MesaModule,
     MetodoPagoModule,
