@@ -31,8 +31,18 @@ export class FacturaService {
     });
     if (existe) throw new BadRequestException('Este pedido ya fue facturado.');
 
+    const totalA_Facturar = Number(pedido.total);
+
+    if (totalA_Facturar <= 0) {
+      throw new BadRequestException(
+        'No se puede generar factura de un pedido con total 0.',
+      );
+    }
+
     const factura = this.facturaRepo.create({
-      ...dto,
+      razonSocial: dto.razonSocial,
+      ruc_cedula: dto.ruc_cedula,
+      total: totalA_Facturar,
       pedido: pedido,
     });
 

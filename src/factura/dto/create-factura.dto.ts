@@ -1,10 +1,4 @@
-import {
-  IsString,
-  IsNotEmpty,
-  IsNumber,
-  IsPositive,
-  IsUUID,
-} from 'class-validator';
+import { IsString, IsNotEmpty, IsUUID } from 'class-validator';
 
 export class CreateFacturaDto {
   @IsString()
@@ -14,10 +8,6 @@ export class CreateFacturaDto {
   @IsString()
   @IsNotEmpty()
   ruc_cedula: string;
-
-  @IsNumber()
-  @IsPositive()
-  total: number;
 
   @IsString()
   @IsNotEmpty()
