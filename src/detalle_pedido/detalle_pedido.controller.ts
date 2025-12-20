@@ -9,6 +9,7 @@ import {
   Query,
   NotFoundException,
   InternalServerErrorException,
+  UseGuards,
 } from '@nestjs/common';
 
 import { DetallePedidoService } from './detalle_pedido.service';
@@ -18,8 +19,11 @@ import { Pagination } from 'nestjs-typeorm-paginate';
 import { DetallePedido } from './entities/detalle_pedido.entity';
 import { SuccessResponseDto } from 'src/common/dto/response.dto';
 import { QueryDto } from 'src/common/dto/query.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
 
 @Controller('detalle-pedido')
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class DetallePedidoController {
   constructor(private readonly detallePedidoService: DetallePedidoService) {}
 

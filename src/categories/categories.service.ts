@@ -36,32 +36,48 @@ export class CategoriesService {
 
   async findAll(
     options: CategoryPaginationOptions,
-  ): Promise<Pagination<Category>> {
-    const { search, searchField, sortBy, sortOrder } = options;
-    const queryBuilder = this.categoryRepo.createQueryBuilder('category');
-    const allowedSearchFields = ['name'];
-    const allowedSortFields = ['id', 'name'];
-    if (search && searchField && allowedSearchFields.includes(searchField)) {
-      queryBuilder.andWhere(
-        `LOWER(category.${searchField}) LIKE :search`,
-        { search: `%${search.toLowerCase()}%` },
-      );
+  ): Promise<Pagination<Category> | null> {
+    try {
+      const { search, searchField, sortBy, sortOrder } = options;
+      const queryBuilder = this.categoryRepo.createQueryBuilder('category');
+
+      const allowedSearchFields = ['name', 'nombre'];
+      const allowedSortFields = ['id', 'name', 'nombre'];
+
+      if (search && searchField && allowedSearchFields.includes(searchField)) {
+        queryBuilder.andWhere(`LOWER(category.${searchField}) LIKE :search`, {
+          search: `%${search.toLowerCase()}%`,
+        });
+      } else if (search) {
+        queryBuilder.andWhere('LOWER(category.name) LIKE :search', {
+          search: `%${search.toLowerCase()}%`,
+        });
+      }
+
+      const orderField =
+        sortBy && allowedSortFields.includes(sortBy) ? sortBy : 'id';
+      const orderDirection: 'ASC' | 'DESC' =
+        sortOrder === 'DESC' ? 'DESC' : 'ASC';
+
+      queryBuilder.orderBy(`category.${orderField}`, orderDirection);
+
+      return await paginate<Category>(queryBuilder, {
+        page: options.page,
+        limit: options.limit,
+      });
+    } catch (err) {
+      console.error('Error finding categories:', err);
+      return null;
     }
-    const orderField = sortBy && allowedSortFields.includes(sortBy) ? sortBy : 'id';
-    const orderDirection: 'ASC' | 'DESC' =
-      sortOrder === 'DESC' ? 'DESC' : 'ASC';
-
-    queryBuilder.orderBy(`category.${orderField}`, orderDirection);
-
-    return paginate<Category>(queryBuilder, {
-      page: options.page,
-      limit: options.limit,
-    });
   }
 
   async findOne(id: string): Promise<Category | null> {
     try {
-      return await this.categoryRepo.findOne({ where: { id } });
+      return await this.categoryRepo
+        .createQueryBuilder('category')
+        .where('category.id = :id', { id })
+        .leftJoinAndSelect('category.products', 'products')
+        .getOne();
     } catch (err) {
       console.error('Error finding category:', err);
       return null;
