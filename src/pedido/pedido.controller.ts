@@ -9,6 +9,7 @@ import {
   Query,
   NotFoundException,
   InternalServerErrorException,
+  UseInterceptors,
 } from '@nestjs/common';
 
 import { PedidoService } from './pedido.service';
@@ -18,12 +19,14 @@ import { Pagination } from 'nestjs-typeorm-paginate';
 import { Pedido } from './entities/pedido.entity';
 import { SuccessResponseDto } from 'src/common/dto/response.dto';
 import { QueryDto } from 'src/common/dto/query.dto';
+import { AuditInterceptor } from 'src/common/interceptors/audit.interceptor';
 
 @Controller('pedido')
 export class PedidoController {
   constructor(private readonly pedidoService: PedidoService) {}
 
   @Post()
+  @UseInterceptors(AuditInterceptor)
   async create(@Body() dto: CreatePedidoDto) {
     const pedido = await this.pedidoService.create(dto);
     if (!pedido)

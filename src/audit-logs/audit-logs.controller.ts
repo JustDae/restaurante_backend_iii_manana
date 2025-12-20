@@ -1,18 +1,36 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Query,
+  InternalServerErrorException,
+  UseInterceptors,
+  ClassSerializerInterceptor,
+} from '@nestjs/common';
 import { AuditLogsService } from './audit-logs.service';
-import { CreateAuditLogDto } from './dto/create-audit-log.dto';
+import { SuccessResponseDto } from 'src/common/dto/response.dto';
 
 @Controller('audit-logs')
+@UseInterceptors(ClassSerializerInterceptor)
 export class AuditLogsController {
   constructor(private readonly auditLogsService: AuditLogsService) {}
 
-  @Post()
-  create(@Body() dto: CreateAuditLogDto) {
-    return this.auditLogsService.create(dto);
-  }
-
   @Get()
-  findAll() {
-    return this.auditLogsService.findAll();
+  async findAll(
+    @Query('page') page = 1,
+    @Query('limit') limit = 10,
+    @Query('action') action?: string,
+    @Query('userId') userId?: string,
+  ): Promise<SuccessResponseDto<any>> {
+    const result = await this.auditLogsService.findAll({
+      page,
+      limit,
+      filters: { action, userId },
+    });
+
+    if (!result) {
+      throw new InternalServerErrorException('Could not retrieve audit logs');
+    }
+
+    return new SuccessResponseDto('Audit logs retrieved successfully', result);
   }
 }
