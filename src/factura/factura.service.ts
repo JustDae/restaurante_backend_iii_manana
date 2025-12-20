@@ -46,7 +46,11 @@ export class FacturaService {
       pedido: pedido,
     });
 
-    return await this.facturaRepo.save(factura);
+    const facturaGuardada = await this.facturaRepo.save(factura);
+    pedido.estado = 'PAGADO';
+    await this.pedidoRepo.save(pedido);
+
+    return facturaGuardada;
   }
 
   async findAll() {
