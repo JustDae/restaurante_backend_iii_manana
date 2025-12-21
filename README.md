@@ -1,28 +1,55 @@
 Restaurante API - Sistema de Gestión POS
-Funcionamiento Integral del Ecosistema
+Funcionamiento Integral 
 
-El sistema Restaurante-API es una solución de backend de alto rendimiento diseñada bajo una arquitectura de micro-módulos en NestJS. Su funcionamiento se basa en la especialización de tareas para garantizar que el restaurante nunca se detenga y que cada acción sea rastreable.
-
-1. El Cerebro: NestJS y Configuración Dinámica
-El núcleo del sistema organiza la lógica de negocio de forma modular. Para garantizar la seguridad desde el segundo cero, el programa utiliza un sistema de variables de entorno; esto significa que las "llaves" del sistema (claves de bases de datos y secretos JWT) nunca están expuestas en el código, permitiendo un despliegue seguro en cualquier servidor.
-
-2. El Corazón: Persistencia Híbrida (SQL + NoSQL)
-A diferencia de sistemas convencionales, este backend utiliza lo mejor de dos mundos para manejar los datos:
-
-PostgreSQL (Manejo Crítico): Utiliza un motor relacional para asegurar que los pedidos, las finanzas y el inventario sean exactos y consistentes. Aquí no hay margen de error: un producto vendido se descuenta del stock mediante transacciones seguras gestionadas por TypeORM.
-
-MongoDB (Auditoría Invisible): Mientras PostgreSQL procesa la venta, un Interceptor Global captura silenciosamente los detalles de quién, cuándo y qué se hizo, guardándolo en MongoDB. Esto crea un historial de auditoría masivo que no ralentiza la operación principal del restaurante.
-
-3. El Escudo: Seguridad y Control de Calidad
-El acceso está blindado por tres niveles de control:
-
-Autenticación: Solo usuarios con un token JWT válido pueden cruzar la puerta.
-
-Autorización (RBAC): El sistema reconoce si eres Admin, Mesero, Cocinero o Cliente, limitando tus acciones mediante Guards personalizados.
-
-Integridad: Antes de procesar cualquier dato, los Validation Pipes verifican que la información sea correcta (por ejemplo, que un precio no sea negativo), rechazando cualquier intento de introducir datos basura.
-
-4. La Operación: Automatización y Experiencia
-El sistema está optimizado para la eficiencia diaria. Incluye paginación y filtros dinámicos para que el personal encuentre productos al instante, y soporta la gestión de imágenes mediante Multer. Además, al ser desarrollado en TypeScript, el código cuenta con un sistema de "autodiagnóstico" que previene errores lógicos, asegurando que el sistema sea estable incluso en las horas pico de mayor demanda.
-
-En conclusión: Es una infraestructura diseñada no solo para registrar datos, sino para actuar como un motor de auditoría y gestión inteligente, escalable y, sobre todo, altamente seguro.
+ Restaurante API - Sistema de Gestión POS Sistema backend robusto para la gestión de un restaurante, incluyendo control de inventario, pedidos, facturación y auditoría en tiempo real.
+ Tecnologías Utilizadas
+Framework: NestJS (Node.js)
+Bases de Datos:
+PostgreSQL: Gestión de datos relacionales (Usuarios, Productos, Pedidos).
+MongoDB: Almacenamiento de logs de auditoría (Arquitectura NoSQL).
+ORM: TypeORM & Mongoose.
+Seguridad: Passport.js, JWT (JSON Web Tokens) y BCrypt para hashing de contraseñas.
+Documentación: Swagger UI.
+Arquitectura del Sistema El proyecto utiliza una arquitectura híbrida:
+Módulos Relacionales (PostgreSQL): Manejo estricto de integridad para el flujo de caja, productos y usuarios.
+Módulo de Auditoría (MongoDB): Los logs se capturan mediante un Interceptor Global que registra cada acción importante (quién, qué y cuándo) sin afectar el rendimiento de la base de datos principal.
+Requisitos Previos
+Node.js (v18 o superior)
+PostgreSQL corriendo
+MongoDB corriendo
+Archivo .env configurado
+Instalación y Configuración
+Clonar el repositorio:
+Bash
+git clone https://github.com/tu-usuario/restaurante-api.git
+cd restaurante-api
+Instalar dependencias:
+Bash
+npm install
+Configurar variables de entorno: Crea un archivo .env en la raíz y añade:
+Plaintext
+PORT=3000
+DB_HOST=localhost
+DB_PORT=5432
+DB_USER=postgres
+DB_PASS=tu_clave
+DB_NAME=restaurante_db
+MONGO_URI=mongodb://localhost:27017/audit_db
+JWT_SECRET=tu_palabra_secreta
+JWT_EXPIRES_IN=24h
+Levantar el servidor:
+Bash
+npm run start:dev
+ Seguridad y Roles (RBAC) El sistema implementa Control de Acceso Basado en Roles (RBAC) mediante Decoradores y Guards personalizados:
+ADMIN: Acceso total (Usuarios, Inventario, Auditoría).
+MESERO: Gestión de Pedidos y Facturación.
+COCINERO: Visualización de pedidos pendientes.
+CLIENTE: Acceso a catálogo de productos.
+Documentación de la API Una vez levantado el proyecto, puedes acceder a la documentación interactiva en:
+http://localhost:3000/docs
+Características Principales
+Paginación Avanzada: Implementada con nestjs-typeorm-paginate en todos los listados.
+Filtros Dinámicos: Búsqueda y ordenamiento flexible mediante QueryBuilder.
+Subida de Archivos: Gestión de imágenes de productos y perfiles de usuario con Multer.
+Seeder Automático: Generación de roles y datos iniciales al primer arranque.
+Try-Catch Global: Manejo de errores robusto y estandarizado en todos los servicios.
