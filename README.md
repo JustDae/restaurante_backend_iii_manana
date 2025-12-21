@@ -1,31 +1,28 @@
 Restaurante API - Sistema de Gestión POS
 Funcionamiento Integral del Ecosistema
 
-El sistema opera como un ecosistema digital coordinado donde el núcleo es NestJS, un framework que organiza la lógica de negocio de manera modular y escalable. Todo comienza con un entorno configurado de forma segura; el programa extrae dinámicamente las credenciales (como las de PostgreSQL y MongoDB) desde un archivo de variables de entorno al arrancar, garantizando que la conexión con los servicios de datos sea hermética y privada.
+El sistema Restaurante-API es una solución de backend de alto rendimiento diseñada bajo una arquitectura de micro-módulos en NestJS. Su funcionamiento se basa en la especialización de tareas para garantizar que el restaurante nunca se detenga y que cada acción sea rastreable.
 
-Arquitectura de Doble Persistencia
-Una vez en marcha, el backend utiliza una arquitectura híbrida diseñada para maximizar la eficiencia:
+1. El Cerebro: NestJS y Configuración Dinámica
+El núcleo del sistema organiza la lógica de negocio de forma modular. Para garantizar la seguridad desde el segundo cero, el programa utiliza un sistema de variables de entorno; esto significa que las "llaves" del sistema (claves de bases de datos y secretos JWT) nunca están expuestas en el código, permitiendo un despliegue seguro en cualquier servidor.
 
-PostgreSQL (vía TypeORM): Gestiona la estructura formal y crítica del restaurante. Aquí reside la integridad de los productos, usuarios, pedidos y el flujo de caja, donde cada transacción requiere precisión absoluta.
+2. El Corazón: Persistencia Híbrida (SQL + NoSQL)
+A diferencia de sistemas convencionales, este backend utiliza lo mejor de dos mundos para manejar los datos:
 
-MongoDB (vía Mongoose): Se encarga exclusivamente de la Auditoría en Tiempo Real. Mediante un Interceptor Global, el sistema captura cada acción importante y la almacena en formato NoSQL. Esto permite tener un historial detallado sin sobrecargar ni ralentizar la base de datos relacional principal.
+PostgreSQL (Manejo Crítico): Utiliza un motor relacional para asegurar que los pedidos, las finanzas y el inventario sean exactos y consistentes. Aquí no hay margen de error: un producto vendido se descuenta del stock mediante transacciones seguras gestionadas por TypeORM.
 
- Seguridad y Flujo de Datos
-Cuando un usuario interactúa con la API, se activan múltiples capas de protección:
+MongoDB (Auditoría Invisible): Mientras PostgreSQL procesa la venta, un Interceptor Global captura silenciosamente los detalles de quién, cuándo y qué se hizo, guardándolo en MongoDB. Esto crea un historial de auditoría masivo que no ralentiza la operación principal del restaurante.
 
-Interceptación y Autenticación: El sistema valida el token digital (JWT). Gracias a Passport.js, si el token es inválido o ha expirado, la petición se detiene de inmediato.
+3. El Escudo: Seguridad y Control de Calidad
+El acceso está blindado por tres niveles de control:
 
-Control de Acceso (RBAC): Mediante decoradores y Guards personalizados, el sistema verifica el rol del usuario (ADMIN, MESERO, COCINERO o CLIENTE), otorgando acceso estrictamente a las funciones autorizadas.
+Autenticación: Solo usuarios con un token JWT válido pueden cruzar la puerta.
 
-Validación Rigurosa: Una vez superada la seguridad, los datos pasan por Validation Pipes. Esto asegura que cualquier información entrante cumpla con el formato correcto antes de tocar la lógica de negocio.
+Autorización (RBAC): El sistema reconoce si eres Admin, Mesero, Cocinero o Cliente, limitando tus acciones mediante Guards personalizados.
 
-Capacidades Avanzadas
-El programa no solo procesa datos, sino que los optimiza para el mundo real:
+Integridad: Antes de procesar cualquier dato, los Validation Pipes verifican que la información sea correcta (por ejemplo, que un precio no sea negativo), rechazando cualquier intento de introducir datos basura.
 
-Gestión de Recursos: Incluye un sistema de subida de archivos con Multer para las imágenes de productos y perfiles.
+4. La Operación: Automatización y Experiencia
+El sistema está optimizado para la eficiencia diaria. Incluye paginación y filtros dinámicos para que el personal encuentre productos al instante, y soporta la gestión de imágenes mediante Multer. Además, al ser desarrollado en TypeScript, el código cuenta con un sistema de "autodiagnóstico" que previene errores lógicos, asegurando que el sistema sea estable incluso en las horas pico de mayor demanda.
 
-Navegación Fluida: Implementa paginación avanzada y filtros dinámicos mediante QueryBuilder, permitiendo búsquedas rápidas en inventarios extensos.
-
-Autodiagnóstico: Al estar escrito en TypeScript, el sistema detecta errores de lógica durante el desarrollo. Además, cuenta con un Try-Catch Global que garantiza que, ante cualquier fallo, el servidor responda de manera controlada sin interrumpir el servicio.
-
-En resumen, es una arquitectura robusta, diseñada para ser el motor invisible que gestiona desde la toma de un pedido hasta la auditoría final de una factura.
+En conclusión: Es una infraestructura diseñada no solo para registrar datos, sino para actuar como un motor de auditoría y gestión inteligente, escalable y, sobre todo, altamente seguro.
