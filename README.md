@@ -1,5 +1,5 @@
 
-# 🍽️ Restaurant API - Sistema de Gestión POS (Point of Sale)
+# 🍽️ Restaurant API - Sistema
 
 **Restaurant API** es un sistema backend robusto de nivel empresarial diseñado para la gestión integral de restaurantes. Esta solución permite el control de inventarios, procesamiento de pedidos, facturación y auditoría transaccional en tiempo real bajo una arquitectura de alto rendimiento y escalable.
 
