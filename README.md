@@ -1,8 +1,31 @@
-Funcionamiento Integral: Sistema de Gestión "Restaurante-Backend"
-El sistema funciona como un ecosistema digital coordinado donde el núcleo es NestJS, un framework que nos permite organizar la lógica de negocio de manera modular. Todo comienza con un entorno configurado de forma segura; el programa no guarda claves dentro de su código, sino que las extrae dinámicamente de un archivo de variables de entorno al arrancar. Esto asegura que la conexión con los servicios externos, como la base de datos y el motor de correos, sea hermética.
+Restaurante API - Sistema de Gestión POS
+Funcionamiento Integral del Ecosistema
 
-Una vez que el servidor está en marcha, el programa opera bajo una arquitectura de doble persistencia. Esto es clave: utilizamos PostgreSQL para manejar toda la estructura formal del restaurante (usuarios, roles y seguridad) mediante un mapeo de datos llamado TypeORM, mientras que delegamos a MongoDB la gestión de contenidos más flexibles, como las publicaciones o blogs del restaurante. Esta combinación permite que el sistema sea extremadamente rápido para leer datos variables y muy seguro para transacciones críticas.
+El sistema opera como un ecosistema digital coordinado donde el núcleo es NestJS, un framework que organiza la lógica de negocio de manera modular y escalable. Todo comienza con un entorno configurado de forma segura; el programa extrae dinámicamente las credenciales (como las de PostgreSQL y MongoDB) desde un archivo de variables de entorno al arrancar, garantizando que la conexión con los servicios de datos sea hermética y privada.
 
-Cuando un usuario interactúa con la plataforma, el programa activa una serie de capas de protección y procesamiento. Primero, el sistema de seguridad intercepta la petición para validar un token digital (JWT); si el usuario no tiene permiso, el programa lo detiene antes de que toque los datos. Si la validación es exitosa, el sistema somete la información a un riguroso control de calidad automático (Validation Pipes), asegurando que ningún dato mal formado o malintencionado entre a la base de datos.
+Arquitectura de Doble Persistencia
+Una vez en marcha, el backend utiliza una arquitectura híbrida diseñada para maximizar la eficiencia:
 
-Finalmente, el programa no solo gestiona datos, sino que también ejecuta acciones en el mundo real. Por ejemplo, al completar un registro o un proceso importante, el backend se conecta de forma invisible con la API de SendGrid para despachar correos electrónicos automáticos a los clientes. Todo este flujo se escribe bajo estándares de TypeScript, lo que significa que el programa tiene la capacidad de autodiagnosticarse durante el desarrollo, detectando errores de lógica antes de que lleguen a producción. En resumen, es una arquitectura diseñada para ser escalable, segura y altamente automatizada.
+PostgreSQL (vía TypeORM): Gestiona la estructura formal y crítica del restaurante. Aquí reside la integridad de los productos, usuarios, pedidos y el flujo de caja, donde cada transacción requiere precisión absoluta.
+
+MongoDB (vía Mongoose): Se encarga exclusivamente de la Auditoría en Tiempo Real. Mediante un Interceptor Global, el sistema captura cada acción importante y la almacena en formato NoSQL. Esto permite tener un historial detallado sin sobrecargar ni ralentizar la base de datos relacional principal.
+
+ Seguridad y Flujo de Datos
+Cuando un usuario interactúa con la API, se activan múltiples capas de protección:
+
+Interceptación y Autenticación: El sistema valida el token digital (JWT). Gracias a Passport.js, si el token es inválido o ha expirado, la petición se detiene de inmediato.
+
+Control de Acceso (RBAC): Mediante decoradores y Guards personalizados, el sistema verifica el rol del usuario (ADMIN, MESERO, COCINERO o CLIENTE), otorgando acceso estrictamente a las funciones autorizadas.
+
+Validación Rigurosa: Una vez superada la seguridad, los datos pasan por Validation Pipes. Esto asegura que cualquier información entrante cumpla con el formato correcto antes de tocar la lógica de negocio.
+
+Capacidades Avanzadas
+El programa no solo procesa datos, sino que los optimiza para el mundo real:
+
+Gestión de Recursos: Incluye un sistema de subida de archivos con Multer para las imágenes de productos y perfiles.
+
+Navegación Fluida: Implementa paginación avanzada y filtros dinámicos mediante QueryBuilder, permitiendo búsquedas rápidas en inventarios extensos.
+
+Autodiagnóstico: Al estar escrito en TypeScript, el sistema detecta errores de lógica durante el desarrollo. Además, cuenta con un Try-Catch Global que garantiza que, ante cualquier fallo, el servidor responda de manera controlada sin interrumpir el servicio.
+
+En resumen, es una arquitectura robusta, diseñada para ser el motor invisible que gestiona desde la toma de un pedido hasta la auditoría final de una factura.
