@@ -11,7 +11,6 @@ export class ResenasService {
     private resenaModel: Model<ResenaDocument>,
   ) {}
 
-  // Este es el método que llama el Controller
   async create(dto: CreateResenaDto) {
     return this.resenaModel.create(dto);
   }

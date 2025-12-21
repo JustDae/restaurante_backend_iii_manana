@@ -95,7 +95,7 @@ export class ProductosController {
   @UseInterceptors(
     FileInterceptor('imagen', {
       storage: diskStorage({
-        destination: './public/productos', // Carpeta donde se guardan
+        destination: './public/productos',
         filename: (req, file, cb) => {
           const uniqueSuffix =
             Date.now() + '-' + Math.round(Math.random() * 1e9);
