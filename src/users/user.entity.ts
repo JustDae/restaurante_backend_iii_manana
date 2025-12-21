@@ -4,8 +4,10 @@ import {
   Column,
   ManyToOne,
   JoinColumn,
+  OneToMany,
 } from 'typeorm';
 import { Rol } from '../rol/entities/rol.entity';
+import { Pedido } from 'src/pedido/entities/pedido.entity';
 
 @Entity('users')
 export class User {
@@ -28,6 +30,9 @@ export class User {
   profile: string;
 
   @ManyToOne(() => Rol, (rol) => rol.users, { eager: true })
-  @JoinColumn({ name: 'rol_id' }) // Esto crea la columna 'rol_id' en tu base de datos postgres
+  @JoinColumn({ name: 'rol_id' })
   rol: Rol;
+
+  @OneToMany(() => Pedido, (pedido) => pedido.usuario)
+  pedidos: Pedido[];
 }

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { paginate, Pagination } from 'nestjs-typeorm-paginate';
@@ -6,20 +6,52 @@ import { Pedido } from './entities/pedido.entity';
 import { CreatePedidoDto } from './dto/create-pedido.dto';
 import { UpdatePedidoDto } from './dto/update-pedido.dto';
 import { QueryDto } from 'src/common/dto/query.dto';
+import { Mesa } from 'src/mesa/entities/mesa.entity';
+import { MetodoPago } from 'src/metodo-pago/entities/metodo-pago.entity';
 
 @Injectable()
 export class PedidoService {
   constructor(
     @InjectRepository(Pedido)
     private readonly pedidoRepo: Repository<Pedido>,
+
+    @InjectRepository(Mesa)
+    private readonly mesaRepo: Repository<Mesa>,
+
+    @InjectRepository(MetodoPago)
+    private readonly metodoRepo: Repository<MetodoPago>,
   ) {}
 
   async create(dto: CreatePedidoDto): Promise<Pedido | null> {
     try {
-      const pedido = this.pedidoRepo.create(dto);
+      const mesa = await this.mesaRepo
+        .createQueryBuilder('m')
+        .where('m.id = :id', { id: dto.mesaId })
+        .getOne();
+
+      if (!mesa)
+        throw new NotFoundException(`La mesa #${dto.mesaId} no existe`);
+
+      const metodoPago = await this.metodoRepo
+        .createQueryBuilder('mp')
+        .where('mp.id = :id', { id: dto.metodoPagoId })
+        .getOne();
+
+      if (!metodoPago)
+        throw new NotFoundException(
+          `El método de pago #${dto.metodoPagoId} no existe`,
+        );
+
+      const pedido = this.pedidoRepo.create({
+        ...dto,
+        mesa: mesa,
+        metodoPago: metodoPago,
+      });
+
       return await this.pedidoRepo.save(pedido);
     } catch (error) {
       console.error('Error creating pedido:', error);
+      if (error instanceof NotFoundException) throw error;
       return null;
     }
   }
@@ -28,19 +60,22 @@ export class PedidoService {
     try {
       const qb = this.pedidoRepo.createQueryBuilder('pedido');
 
+      qb.leftJoinAndSelect('pedido.mesa', 'mesa');
+      qb.leftJoinAndSelect('pedido.metodoPago', 'metodoPago');
+
       if (query.search) {
-        qb.where('LOWER(pedido.nombre_cliente) LIKE :search', {
-          search: `%${query.search.toLowerCase()}%`,
-        }).orWhere('LOWER(pedido.correo) LIKE :search', {
-          search: `%${query.search.toLowerCase()}%`,
-        });
+        qb.andWhere(
+          '(LOWER(pedido.nombre_cliente) LIKE :search OR LOWER(pedido.correo) LIKE :search)',
+          { search: `%${query.search.toLowerCase()}%` },
+        );
       }
 
       qb.orderBy('pedido.fecha_pedido', 'DESC');
 
-      return paginate(qb, {
+      return await paginate<Pedido>(qb, {
         page: query.page || 1,
         limit: query.limit || 10,
+        route: 'http://localhost:3000/pedidos',
       });
     } catch (error) {
       console.error('Error finding pedidos:', error);
@@ -50,7 +85,12 @@ export class PedidoService {
 
   async findOne(id: string): Promise<Pedido | null> {
     try {
-      return await this.pedidoRepo.findOne({ where: { id } });
+      return await this.pedidoRepo
+        .createQueryBuilder('pedido')
+        .leftJoinAndSelect('pedido.mesa', 'mesa')
+        .leftJoinAndSelect('pedido.metodoPago', 'metodoPago')
+        .where('pedido.id = :id', { id })
+        .getOne();
     } catch (error) {
       console.error('Error finding pedido:', error);
       return null;

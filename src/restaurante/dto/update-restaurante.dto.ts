@@ -1,7 +1,24 @@
-import { IsOptional, IsString } from 'class-validator';
+import { IsOptional, IsString, Length } from 'class-validator';
 
 export class UpdateRestauranteDto {
-  @IsString()
   @IsOptional()
+  @IsString()
   name?: string;
+
+  @IsOptional()
+  @IsString()
+  direccion?: string;
+
+  @IsOptional()
+  @IsString()
+  telefono?: string;
+
+  @IsOptional()
+  @IsString()
+  @Length(10, 13)
+  ruc?: string;
+
+  @IsOptional()
+  @IsString()
+  slogan?: string;
 }
