@@ -48,7 +48,6 @@ export class ProductosController {
 
   @Get(':id')
   async findOne(@Param('id') id: string) {
-    // ⚠️ CAMBIO AQUÍ: Agregamos el '+' para convertir a número
     const producto = await this.productosService.findOne(+id);
 
     if (!producto) throw new NotFoundException('Producto not found');
@@ -57,7 +56,6 @@ export class ProductosController {
 
   @Put(':id')
   async update(@Param('id') id: string, @Body() dto: UpdateProductoDto) {
-    // ⚠️ CAMBIO AQUÍ: Agregamos el '+'
     const producto = await this.productosService.update(+id, dto);
 
     if (!producto) throw new NotFoundException('Producto not found');
@@ -66,7 +64,6 @@ export class ProductosController {
 
   @Delete(':id')
   async remove(@Param('id') id: string) {
-    // ⚠️ CAMBIO AQUÍ: Agregamos el '+'
     const producto = await this.productosService.remove(+id);
 
     if (!producto) throw new NotFoundException('Producto not found');

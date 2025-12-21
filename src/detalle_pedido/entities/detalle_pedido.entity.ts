@@ -16,10 +16,10 @@ export class DetallePedido {
   @Column('int')
   cantidad: number;
 
-  @Column('decimal', { precision: 10, scale: 2 })
+  @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
   precio_unitario: number;
 
-  @Column('decimal', { precision: 10, scale: 2 })
+  @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
   subtotal: number;
 
   @Column({ nullable: true })

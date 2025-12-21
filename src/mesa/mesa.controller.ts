@@ -8,12 +8,17 @@ import {
   Delete,
   UseGuards,
   ParseIntPipe,
+  Query,
+  InternalServerErrorException,
 } from '@nestjs/common';
 import { MesaService } from './mesa.service';
 import { CreateMesaDto } from './dto/create-mesa.dto';
 import { UpdateMesaDto } from './dto/update-mesa.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { SuccessResponseDto } from 'src/common/dto/response.dto';
+import { QueryDto } from 'src/common/dto/query.dto';
+import { Pagination } from 'nestjs-typeorm-paginate';
+import { Mesa } from './entities/mesa.entity';
 
 @Controller('mesa')
 @UseGuards(JwtAuthGuard)
@@ -27,9 +32,19 @@ export class MesaController {
   }
 
   @Get()
-  async findAll() {
-    const data = await this.mesaService.findAll();
-    return new SuccessResponseDto('Listado de mesas', data);
+  async findAll(
+    @Query() query: QueryDto,
+  ): Promise<SuccessResponseDto<Pagination<Mesa>>> {
+    if (query.limit && query.limit > 100) {
+      query.limit = 100;
+    }
+
+    const result = await this.mesaService.findAll(query);
+
+    if (!result)
+      throw new InternalServerErrorException('Could not retrieve mesas');
+
+    return new SuccessResponseDto('Listado de mesas', result);
   }
 
   @Get(':id')
