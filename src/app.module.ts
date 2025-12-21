@@ -16,6 +16,8 @@ import { AuditLogsModule } from './audit-logs/audit-logs.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { MesaModule } from './mesa/mesa.module';
 import { MetodoPagoModule } from './metodo-pago/metodo-pago.module';
+import { NotificacionesModule } from './notificaciones/notificaciones.module';
+import { ResenasModule } from './resenas/resenas.module';
 
 @Module({
   imports: [
@@ -44,6 +46,8 @@ import { MetodoPagoModule } from './metodo-pago/metodo-pago.module';
     AuditLogsModule,
     MesaModule,
     MetodoPagoModule,
+    NotificacionesModule,
+    ResenasModule,
   ],
   controllers: [AppController],
   providers: [AppService],

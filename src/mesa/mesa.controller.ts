@@ -10,16 +10,19 @@ import {
   NotFoundException,
   InternalServerErrorException,
   UseGuards,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { MesaService } from './mesa.service';
 import { CreateMesaDto } from './dto/create-mesa.dto';
 import { UpdateMesaDto } from './dto/update-mesa.dto';
 import { SuccessResponseDto } from 'src/common/dto/response.dto';
 import { QueryDto } from 'src/common/dto/query.dto';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { RolesGuard } from '../auth/guards/roles.guard';
+import { Pagination } from 'nestjs-typeorm-paginate';
+import { Mesa } from './entities/mesa.entity';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
 
-@Controller('mesas')
+@Controller('mesa')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class MesaController {
   constructor(private readonly mesaService: MesaService) {}
@@ -32,43 +35,42 @@ export class MesaController {
   }
 
   @Get()
-  async findAll(@Query() query: QueryDto) {
-    const result = await this.mesaService.findAll({
-      page: query.page || 1,
-      limit: query.limit || 10,
-      search: query.search,
-      searchField: query.searchField || 'numero',
-      sortBy: query.sort || 'id',
-      sortOrder: query.order || 'ASC',
-      route: 'http://localhost:3000/mesas',
-    });
+  async findAll(
+    @Query() query: QueryDto,
+  ): Promise<SuccessResponseDto<Pagination<Mesa>>> {
+    if (query.limit && query.limit > 100) {
+      query.limit = 100;
+    }
+
+    const result = await this.mesaService.findAll(query);
 
     if (!result)
-      throw new InternalServerErrorException(
-        'No se pudieron obtener las mesas',
-      );
+      throw new InternalServerErrorException('Could not retrieve mesas');
 
-    return new SuccessResponseDto('Mesas obtenidas exitosamente', result);
+    return new SuccessResponseDto('Listado de mesas', result);
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string) {
-    const mesa = await this.mesaService.findOne(+id);
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    const mesa = await this.mesaService.findOne(id);
     if (!mesa) throw new NotFoundException('Mesa no encontrada');
     return new SuccessResponseDto('Mesa obtenida exitosamente', mesa);
   }
 
   @Put(':id')
-  async update(@Param('id') id: string, @Body() dto: UpdateMesaDto) {
-    const mesa = await this.mesaService.update(+id, dto);
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: UpdateMesaDto,
+  ) {
+    const mesa = await this.mesaService.update(id, dto);
     if (!mesa)
       throw new NotFoundException('Mesa no encontrada o error al actualizar');
     return new SuccessResponseDto('Mesa actualizada exitosamente', mesa);
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string) {
-    const mesa = await this.mesaService.remove(+id);
+  async remove(@Param('id', ParseIntPipe) id: number) {
+    const mesa = await this.mesaService.remove(id);
     if (!mesa)
       throw new NotFoundException('Mesa no encontrada o error al eliminar');
     return new SuccessResponseDto('Mesa eliminada exitosamente', mesa);

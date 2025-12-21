@@ -15,7 +15,6 @@ async function bootstrap() {
     }),
   );
 
-  // 2. Swagger
   const config = new DocumentBuilder()
     .setTitle('Restaurante API')
     .setDescription(
@@ -47,7 +46,7 @@ async function bootstrap() {
 
     await queryRunner.release();
   } catch (error) {
-    console.error('❌ Error al crear roles iniciales:', error.message);
+    console.error('Error al crear roles iniciales:', error.message);
   }
 
   await app.listen(process.env.PORT ?? 3000);
