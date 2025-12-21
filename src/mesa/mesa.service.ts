@@ -51,7 +51,10 @@ export class MesaService {
       return await this.mesaRepo.findOne({ where: { id } });
     } catch (error) {
       console.error('Error finding mesa:', error);
-      return null;
+      return await this.mesaRepo
+        .createQueryBuilder('mesa')
+        .where('mesa.id = :id', { id })
+        .getOne();
     }
   }
 

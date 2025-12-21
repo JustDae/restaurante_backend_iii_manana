@@ -14,9 +14,10 @@ import { CreateMetodoPagoDto } from './dto/create-metodo-pago.dto';
 import { UpdateMetodoPagoDto } from './dto/update-metodo-pago.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { SuccessResponseDto } from 'src/common/dto/response.dto';
+import { RolesGuard } from '../auth/guards/roles.guard';
 
 @Controller('metodo-pago')
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class MetodoPagoController {
   constructor(private readonly metodoService: MetodoPagoService) {}
 

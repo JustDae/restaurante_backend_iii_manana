@@ -1,4 +1,10 @@
-import { IsString, IsNumber, IsOptional, IsBoolean } from 'class-validator';
+import {
+  IsString,
+  IsNumber,
+  IsOptional,
+  IsBoolean,
+  IsUUID,
+} from 'class-validator';
 
 export class UpdateProductoDto {
   @IsString()
@@ -16,4 +22,7 @@ export class UpdateProductoDto {
   @IsBoolean()
   @IsOptional()
   estado?: boolean;
+
+  @IsUUID()
+  categoryId: string;
 }

@@ -17,6 +17,7 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User | null> {
+    console.log('DTO recibido:', createUserDto);
     try {
       const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
 
@@ -85,7 +86,10 @@ export class UsersService {
         query.orderBy(sortField, order ?? 'ASC');
       }
 
-      return await paginate<User>(query, { page, limit });
+      return await paginate<User>(query, {
+        page: page || 1,
+        limit: limit || 10,
+      });
     } catch (err) {
       console.error('Error retrieving users:', err);
       return null;
@@ -94,7 +98,11 @@ export class UsersService {
 
   async findOne(id: string): Promise<User | null> {
     try {
-      return await this.userRepository.findOne({ where: { id } });
+      return await this.userRepository
+        .createQueryBuilder('user')
+        .leftJoinAndSelect('user.rol', 'rol')
+        .where('user.id = :id', { id })
+        .getOne();
     } catch (err) {
       console.error('Error finding user:', err);
       return null;
@@ -103,7 +111,12 @@ export class UsersService {
 
   async findByUsername(username: string): Promise<User | null> {
     try {
-      return await this.userRepository.findOne({ where: { username } });
+      return await this.userRepository
+        .createQueryBuilder('user')
+        .leftJoinAndSelect('user.rol', 'rol')
+        .addSelect('user.password')
+        .where('user.username = :username', { username })
+        .getOne();
     } catch (err) {
       console.error('Error finding user by username:', err);
       return null;
@@ -112,7 +125,7 @@ export class UsersService {
 
   async update(id: string, updateUserDto: UpdateUserDto): Promise<User | null> {
     try {
-      const user = await this.userRepository.findOne({ where: { id } });
+      const user = await this.findOne(id);
       if (!user) return null;
 
       if (updateUserDto.password) {
@@ -124,7 +137,6 @@ export class UsersService {
       }
 
       const { rolId, ...params } = updateUserDto;
-
       void rolId;
 
       Object.assign(user, params);

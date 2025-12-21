@@ -2,33 +2,36 @@ import {
   Controller,
   Get,
   Post,
-  Body,
   Put,
-  Param,
   Delete,
+  Body,
+  Param,
+  Query,
+  NotFoundException,
+  InternalServerErrorException,
   UseGuards,
   ParseIntPipe,
-  Query,
-  InternalServerErrorException,
 } from '@nestjs/common';
 import { MesaService } from './mesa.service';
 import { CreateMesaDto } from './dto/create-mesa.dto';
 import { UpdateMesaDto } from './dto/update-mesa.dto';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { SuccessResponseDto } from 'src/common/dto/response.dto';
 import { QueryDto } from 'src/common/dto/query.dto';
 import { Pagination } from 'nestjs-typeorm-paginate';
 import { Mesa } from './entities/mesa.entity';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
 
 @Controller('mesa')
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class MesaController {
   constructor(private readonly mesaService: MesaService) {}
 
   @Post()
   async create(@Body() dto: CreateMesaDto) {
-    const data = await this.mesaService.create(dto);
-    return new SuccessResponseDto('Mesa creada correctamente', data);
+    const mesa = await this.mesaService.create(dto);
+    if (!mesa) throw new InternalServerErrorException('Error al crear la mesa');
+    return new SuccessResponseDto('Mesa creada exitosamente', mesa);
   }
 
   @Get()
@@ -49,8 +52,9 @@ export class MesaController {
 
   @Get(':id')
   async findOne(@Param('id', ParseIntPipe) id: number) {
-    const data = await this.mesaService.findOne(id);
-    return new SuccessResponseDto('Detalle de mesa', data);
+    const mesa = await this.mesaService.findOne(id);
+    if (!mesa) throw new NotFoundException('Mesa no encontrada');
+    return new SuccessResponseDto('Mesa obtenida exitosamente', mesa);
   }
 
   @Put(':id')
@@ -58,13 +62,17 @@ export class MesaController {
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateMesaDto,
   ) {
-    const data = await this.mesaService.update(id, dto);
-    return new SuccessResponseDto('Mesa actualizada', data);
+    const mesa = await this.mesaService.update(id, dto);
+    if (!mesa)
+      throw new NotFoundException('Mesa no encontrada o error al actualizar');
+    return new SuccessResponseDto('Mesa actualizada exitosamente', mesa);
   }
 
   @Delete(':id')
   async remove(@Param('id', ParseIntPipe) id: number) {
-    const data = await this.mesaService.remove(id);
-    return new SuccessResponseDto('Mesa eliminada', data);
+    const mesa = await this.mesaService.remove(id);
+    if (!mesa)
+      throw new NotFoundException('Mesa no encontrada o error al eliminar');
+    return new SuccessResponseDto('Mesa eliminada exitosamente', mesa);
   }
 }

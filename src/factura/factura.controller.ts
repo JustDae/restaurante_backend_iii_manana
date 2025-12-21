@@ -19,9 +19,10 @@ import { SuccessResponseDto } from 'src/common/dto/response.dto';
 import { QueryDto } from 'src/common/dto/query.dto';
 import { Pagination } from 'nestjs-typeorm-paginate';
 import { Factura } from './entities/factura.entity';
+import { RolesGuard } from '../auth/guards/roles.guard';
 
 @Controller('factura')
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class FacturaController {
   constructor(private readonly facturaService: FacturaService) {}
 

@@ -24,20 +24,23 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { QueryDto } from 'src/common/dto/query.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
 
 @Controller('users')
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  @UseGuards(JwtAuthGuard)
+  @Roles('ADMIN')
   async create(@Body() dto: CreateUserDto) {
     const user = await this.usersService.create(dto);
     return new SuccessResponseDto('User created successfully', user);
   }
 
   @Get()
-  @UseGuards(JwtAuthGuard)
+  @Roles('ADMIN', 'MESERO')
   async findAll(
     @Query() query: QueryDto,
     @Query('isActive') isActive?: string,
@@ -60,7 +63,7 @@ export class UsersController {
   }
 
   @Get(':id')
-  @UseGuards(JwtAuthGuard)
+  @Roles('ADMIN')
   async findOne(@Param('id') id: string) {
     const user = await this.usersService.findOne(id);
     if (!user) throw new NotFoundException('User not found');
@@ -68,7 +71,6 @@ export class UsersController {
   }
 
   @Put(':id')
-  @UseGuards(JwtAuthGuard)
   async update(@Param('id') id: string, @Body() dto: UpdateUserDto) {
     const user = await this.usersService.update(id, dto);
     if (!user) throw new NotFoundException('User not found');
@@ -76,7 +78,7 @@ export class UsersController {
   }
 
   @Delete(':id')
-  @UseGuards(JwtAuthGuard)
+  @Roles('ADMIN')
   async remove(@Param('id') id: string) {
     const user = await this.usersService.remove(id);
     if (!user) throw new NotFoundException('User not found');
@@ -84,7 +86,6 @@ export class UsersController {
   }
 
   @Put(':id/profile')
-  @UseGuards(JwtAuthGuard)
   @UseInterceptors(
     FileInterceptor('profile', {
       storage: diskStorage({
