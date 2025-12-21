@@ -51,7 +51,6 @@ export class PedidoService {
       return await this.pedidoRepo.save(pedido);
     } catch (error) {
       console.error('Error creating pedido:', error);
-      // Si el error es NotFoundException lo relanzamos para que el Controller responda 404
       if (error instanceof NotFoundException) throw error;
       return null;
     }

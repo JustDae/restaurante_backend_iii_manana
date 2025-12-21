@@ -30,7 +30,7 @@ export class RolService {
   }
 
   async update(id: number, updateRolDto: UpdateRolDto) {
-    const rol = await this.findOne(id); // Reutilizamos findOne para validar que exista
+    const rol = await this.findOne(id);
     Object.assign(rol, updateRolDto);
     return await this.rolRepository.save(rol);
   }

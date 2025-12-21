@@ -30,7 +30,7 @@ export class User {
   profile: string;
 
   @ManyToOne(() => Rol, (rol) => rol.users, { eager: true })
-  @JoinColumn({ name: 'rol_id' }) // Esto crea la columna 'rol_id' en tu base de datos postgres
+  @JoinColumn({ name: 'rol_id' })
   rol: Rol;
 
   @OneToMany(() => Pedido, (pedido) => pedido.usuario)

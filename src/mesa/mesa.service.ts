@@ -6,7 +6,7 @@ import {
   IPaginationOptions,
   Pagination,
 } from 'nestjs-typeorm-paginate';
-import { Mesa } from './entities/mesa.entity'; // Asegura la ruta
+import { Mesa } from './entities/mesa.entity';
 import { CreateMesaDto } from './dto/create-mesa.dto';
 import { UpdateMesaDto } from './dto/update-mesa.dto';
 

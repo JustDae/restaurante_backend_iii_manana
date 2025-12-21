@@ -21,7 +21,7 @@ import { Pedido } from './entities/pedido.entity';
 import { SuccessResponseDto } from 'src/common/dto/response.dto';
 import { QueryDto } from 'src/common/dto/query.dto';
 import { AuditInterceptor } from 'src/common/interceptors/audit.interceptor';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard'; // 👈 Importa tu guard
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
 @Controller('pedidos')
 @UseGuards(JwtAuthGuard)

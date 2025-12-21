@@ -2,12 +2,11 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { DataSource } from 'typeorm'; // 👈 Importamos DataSource
+import { DataSource } from 'typeorm';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // 1. Configuración de Pipes Globales
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,

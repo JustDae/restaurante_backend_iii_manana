@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common'; // Agregamos NotFoundException
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { paginate, Pagination } from 'nestjs-typeorm-paginate';
@@ -61,9 +61,8 @@ export class DetallePedidoService {
     try {
       const qb = this.detallePedidoRepo.createQueryBuilder('detalle_pedido');
 
-      // 3. JOINS: Traemos la info del Producto y del Pedido
       qb.leftJoinAndSelect('detalle_pedido.producto', 'producto');
-      qb.leftJoinAndSelect('detalle_pedido.pedido', 'pedido'); // Necesario para buscar por cliente
+      qb.leftJoinAndSelect('detalle_pedido.pedido', 'pedido');
 
       if (query.search) {
         qb.where('LOWER(pedido.nombre_cliente) LIKE :search', {
