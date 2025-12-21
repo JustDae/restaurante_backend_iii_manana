@@ -1,8 +1,20 @@
-import { Controller, Post, Get, Patch, Delete, Body, Param } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Get,
+  Patch,
+  Delete,
+  Body,
+  Param,
+  UseGuards,
+} from '@nestjs/common';
 import { ResenasService } from './resenas.service';
 import { CreateResenaDto } from './dto/create-resena.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
 
 @Controller('resenas')
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class ResenasController {
   constructor(private readonly service: ResenasService) {}
 
