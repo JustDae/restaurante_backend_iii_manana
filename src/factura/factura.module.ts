@@ -6,9 +6,7 @@ import { Factura } from './entities/factura.entity';
 import { Pedido } from '../pedido/entities/pedido.entity';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Factura, Pedido])
-  ],
+  imports: [TypeOrmModule.forFeature([Factura, Pedido])],
   controllers: [FacturaController],
   providers: [FacturaService],
 })

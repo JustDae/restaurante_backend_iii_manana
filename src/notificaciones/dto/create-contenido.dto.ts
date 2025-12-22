@@ -9,7 +9,7 @@ export class CreateContenidoDto {
 
   @IsOptional()
   @IsString()
-  tipo?: string; 
+  tipo?: string;
 
   @IsOptional()
   @IsString()
