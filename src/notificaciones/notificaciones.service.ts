@@ -19,9 +19,7 @@ export class NotificacionesService {
   }
 
   findAllByUsuario(usuarioId: string) {
-    return this.notificacionModel
-      .find({ usuarioId })
-      .sort({ fecha: -1 });
+    return this.notificacionModel.find({ usuarioId }).sort({ fecha: -1 });
   }
 
   marcarComoLeido(id: string) {
