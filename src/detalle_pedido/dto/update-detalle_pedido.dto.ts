@@ -1,34 +1,18 @@
-import { IsDate, IsNumber, IsString, IsOptional } from 'class-validator';
+import { IsString, IsOptional, IsInt, IsPositive } from 'class-validator';
 export class UpdateDetallePedidoDto {
   @IsOptional()
   @IsString()
-  nombre_cliente?: string;
+  productoId?: number;
 
-  @IsOptional()
-  @IsString()
-  nombre_producto?: string;
-
-  @IsOptional()
-  @IsString()
-  direccion?: string;
-
-  @IsOptional()
-  @IsNumber()
+  @IsInt()
+  @IsPositive()
   cantidad?: number;
 
   @IsOptional()
-  @IsDate()
-  fecha_pedido?: Date;
+  @IsString()
+  pedidoId?: string;
 
   @IsOptional()
   @IsString()
-  telefono?: string;
-
-  @IsOptional()
-  @IsString()
-  correo?: string;
-
-  @IsOptional()
-  @IsString()
-  estado?: string;
+  observaciones?: string;
 }
