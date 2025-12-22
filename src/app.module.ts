@@ -18,6 +18,7 @@ import { MesaModule } from './mesa/mesa.module';
 import { MetodoPagoModule } from './metodo-pago/metodo-pago.module';
 import { NotificacionesModule } from './notificaciones/notificaciones.module';
 import { ResenasModule } from './resenas/resenas.module';
+import { PromocionesModule } from './promociones/promociones.module';
 
 @Module({
   imports: [
@@ -48,6 +49,7 @@ import { ResenasModule } from './resenas/resenas.module';
     MetodoPagoModule,
     NotificacionesModule,
     ResenasModule,
+    PromocionesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

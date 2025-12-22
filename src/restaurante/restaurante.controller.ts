@@ -53,7 +53,7 @@ export class RestauranteController {
   }
 
   @Delete(':id')
-  @UseGuards(JwtAuthGuard) // Solo usuarios autenticados
+  @UseGuards(JwtAuthGuard)
   async remove(@Param('id', ParseIntPipe) id: number) {
     const data = await this.restauranteService.remove(id);
     if (!data) {
