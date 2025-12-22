@@ -18,6 +18,10 @@ export class Producto {
   @Column({ nullable: true })
   estado: boolean;
 
-  @ManyToOne(() => Category, (category) => category.productos, { eager: true })
+  @ManyToOne(() => Category, (category) => category.productos, {
+    eager: true,
+    onDelete: 'SET NULL',
+    nullable: true,
+  })
   category: Category;
 }
