@@ -8,6 +8,7 @@ import {
   Delete,
   UseGuards,
   ParseIntPipe,
+  NotFoundException,
 } from '@nestjs/common';
 import { RestauranteService } from './restaurante.service';
 import { CreateRestauranteDto } from './dto/create-restaurante.dto';
@@ -49,5 +50,15 @@ export class RestauranteController {
       'Información actualizada correctamente',
       data,
     );
+  }
+
+  @Delete(':id')
+  @UseGuards(JwtAuthGuard) // Solo usuarios autenticados
+  async remove(@Param('id', ParseIntPipe) id: number) {
+    const data = await this.restauranteService.remove(id);
+    if (!data) {
+      throw new NotFoundException(`El restaurante con ID ${id} no existe`);
+    }
+    return new SuccessResponseDto('Restaurante eliminado correctamente', data);
   }
 }
