@@ -18,5 +18,4 @@ export class Notificacione {
 }
 
 export type NotificacioneDocument = Notificacione & Document;
-export const NotificacioneSchema =
-  SchemaFactory.createForClass(Notificacione);
+export const NotificacioneSchema = SchemaFactory.createForClass(Notificacione);

@@ -71,6 +71,7 @@ export class UsersController {
   }
 
   @Put(':id')
+  @Roles('ADMIN')
   async update(@Param('id') id: string, @Body() dto: UpdateUserDto) {
     const user = await this.usersService.update(id, dto);
     if (!user) throw new NotFoundException('User not found');
@@ -86,6 +87,7 @@ export class UsersController {
   }
 
   @Put(':id/profile')
+  @Roles('ADMIN')
   @UseInterceptors(
     FileInterceptor('profile', {
       storage: diskStorage({

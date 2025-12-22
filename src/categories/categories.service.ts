@@ -76,7 +76,6 @@ export class CategoriesService {
       return await this.categoryRepo
         .createQueryBuilder('category')
         .where('category.id = :id', { id })
-        .leftJoinAndSelect('category.products', 'products')
         .getOne();
     } catch (err) {
       console.error('Error finding category:', err);
