@@ -5,5 +5,5 @@ export class CreateResenaDto {
   contenido: CreateContenidoDto;
 
   @IsDateString()
-  fecha: Date; 
+  fecha: Date;
 }
