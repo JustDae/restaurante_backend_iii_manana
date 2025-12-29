@@ -8,6 +8,7 @@ import { UpdateDetallePedidoDto } from './dto/update-detalle_pedido.dto';
 import { QueryDto } from 'src/common/dto/query.dto';
 import { Pedido } from 'src/pedido/entities/pedido.entity';
 import { Producto } from 'src/productos/entities/producto.entity';
+import { NotificacionesService } from 'src/notificaciones/notificaciones.service';
 
 @Injectable()
 export class DetallePedidoService {
@@ -20,6 +21,8 @@ export class DetallePedidoService {
 
     @InjectRepository(Producto)
     private readonly productoRepo: Repository<Producto>,
+
+    private readonly notificacionesService: NotificacionesService,
   ) {}
 
   async create(dto: CreateDetallePedidoDto): Promise<DetallePedido | null> {
@@ -49,6 +52,16 @@ export class DetallePedidoService {
       const totalActual = Number(pedido.total) || 0;
       pedido.total = totalActual + subtotal;
       await this.pedidoRepo.save(pedido);
+
+      this.notificacionesService.create({
+        usuarioId: 'ID_COCINA_REST',
+        contenido: {
+          titulo: 'Nuevo Plato para Preparar',
+          mensaje: `Plato: ${producto.nombre} | Cantidad: ${dto.cantidad} | Obs: ${dto.observaciones || 'Ninguna'}`,
+        },
+        tipo: 'NUEVO_PLATILLO',
+        mensaje: ''
+      }).catch(err => console.error('Error enviando notificación a Mongo:', err));
 
       return resultado;
     } catch (error) {
