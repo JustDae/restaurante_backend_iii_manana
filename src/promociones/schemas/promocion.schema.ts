@@ -10,7 +10,7 @@ export class Promocion extends Document {
   descripcion: string;
 
   @Prop({ required: true, unique: true })
-  codigo: string; // Ejemplo: "PROMO20"
+  codigo: string;
 
   @Prop({ required: true })
   descuentoPorcentaje: number;
