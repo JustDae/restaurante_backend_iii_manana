@@ -5,6 +5,7 @@ import {
   Body,
   Put,
   Param,
+  Delete,
   UseGuards,
   ParseIntPipe,
 } from '@nestjs/common';
@@ -48,5 +49,12 @@ export class RestauranteController {
       'Información actualizada correctamente',
       data,
     );
+  }
+
+  @Delete(':id')
+  @UseGuards(JwtAuthGuard)
+  async remove(@Param('id', ParseIntPipe) id: number) {
+    await this.restauranteService.remove(id);
+    return new SuccessResponseDto('Restaurante eliminado correctamente', null);
   }
 }
