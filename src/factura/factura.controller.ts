@@ -10,6 +10,7 @@ import {
   Query,
   InternalServerErrorException,
   NotFoundException,
+  Delete,
 } from '@nestjs/common';
 import { FacturaService } from './factura.service';
 import { CreateFacturaDto } from './dto/create-factura.dto';
@@ -20,6 +21,7 @@ import { QueryDto } from 'src/common/dto/query.dto';
 import { Pagination } from 'nestjs-typeorm-paginate';
 import { Factura } from './entities/factura.entity';
 import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
 
 @Controller('factura')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -71,5 +73,17 @@ export class FacturaController {
     if (!data) throw new NotFoundException('Factura not found');
 
     return new SuccessResponseDto('Factura corregida', data);
+  }
+
+  @Delete(':id')
+  @Roles('ADMIN')
+  async remove(@Param('id', ParseIntPipe) id: number) {
+    const data = await this.facturaService.remove(id);
+
+    if (!data) {
+      throw new NotFoundException(`Factura con ID ${id} no encontrada`);
+    }
+
+    return new SuccessResponseDto('Factura eliminada del registro', data);
   }
 }

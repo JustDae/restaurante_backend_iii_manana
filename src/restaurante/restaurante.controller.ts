@@ -8,6 +8,7 @@ import {
   Delete,
   UseGuards,
   ParseIntPipe,
+  NotFoundException,
 } from '@nestjs/common';
 import { RestauranteService } from './restaurante.service';
 import { CreateRestauranteDto } from './dto/create-restaurante.dto';
