@@ -5,6 +5,7 @@ import {
   Body,
   Put,
   Param,
+  Delete,
   UseGuards,
   ParseIntPipe,
   NotFoundException,
@@ -54,10 +55,7 @@ export class RestauranteController {
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
   async remove(@Param('id', ParseIntPipe) id: number) {
-    const data = await this.restauranteService.remove(id);
-    if (!data) {
-      throw new NotFoundException(`El restaurante con ID ${id} no existe`);
-    }
-    return new SuccessResponseDto('Restaurante eliminado correctamente', data);
+    await this.restauranteService.remove(id);
+    return new SuccessResponseDto('Restaurante eliminado correctamente', null);
   }
 }

@@ -8,6 +8,9 @@ import { UpdatePedidoDto } from './dto/update-pedido.dto';
 import { QueryDto } from 'src/common/dto/query.dto';
 import { Mesa } from 'src/mesa/entities/mesa.entity';
 import { MetodoPago } from 'src/metodo-pago/entities/metodo-pago.entity';
+// Importa tu servicio de notificaciones
+import { NotificacionesService } from 'src/notificaciones/notificaciones.service'; 
+import { CreateContenidoDto } from 'src/notificaciones/dto/create-contenido.dto';
 
 @Injectable()
 export class PedidoService {
@@ -20,6 +23,9 @@ export class PedidoService {
 
     @InjectRepository(MetodoPago)
     private readonly metodoRepo: Repository<MetodoPago>,
+
+    // Inyectamos el servicio de notificaciones sin alterar los anteriores
+    private readonly notificacionesService: NotificacionesService,
   ) {}
 
   async create(dto: CreatePedidoDto): Promise<Pedido | null> {
@@ -48,7 +54,16 @@ export class PedidoService {
         metodoPago: metodoPago,
       });
 
-      return await this.pedidoRepo.save(pedido);
+      const pedidoGuardado = await this.pedidoRepo.save(pedido);
+
+      this.notificacionesService.create({
+        usuarioId: 'ID_DE_LA_COCINA',
+        mensaje: `Nueva orden recibida para la mesa ${mesa.id}`,
+        tipo: 'NUEVO_PEDIDO',
+        contenido: new CreateContenidoDto
+      }).catch(err => console.error('Error persistiendo notificación en Mongo:', err));
+
+      return pedidoGuardado;
     } catch (error) {
       console.error('Error creating pedido:', error);
       if (error instanceof NotFoundException) throw error;

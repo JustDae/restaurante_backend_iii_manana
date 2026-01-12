@@ -5,9 +5,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { DetallePedido } from 'src/detalle_pedido/entities/detalle_pedido.entity';
 import { Pedido } from 'src/pedido/entities/pedido.entity';
 import { Producto } from 'src/productos/entities/producto.entity';
+import { NotificacionesModule } from 'src/notificaciones/notificaciones.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([DetallePedido, Pedido, Producto])],
+  imports: [TypeOrmModule.forFeature([DetallePedido, Pedido, Producto]),
+  NotificacionesModule,
+],
   controllers: [DetallePedidoController],
   providers: [DetallePedidoService],
 })
