@@ -1,4 +1,4 @@
-name: 🚀 Deploy NestJS Blog Backend API to VPS
+name: 🚀 Deploy NestJS Restaurante Backend API to VPS
 
 on:
   push:
