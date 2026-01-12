@@ -1,0 +1,47 @@
+name: 🚀 Deploy NestJS Blog Backend API to VPS
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Copy project to VPS
+      uses: appleboy/scp-action@v0.1.7
+      with:
+        host: ${{ secrets.VPS_HOST }}
+        username: ${{ secrets.VPS_USER }}
+        key: ${{ secrets.VPS_KEY }}
+        source: "."
+        target: "/root/opt/restaurante_backend_iii_manana"
+
+    - name: Run deploy commands on VPS
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.VPS_HOST }}
+        username: ${{ secrets.VPS_USER }}
+        key: ${{ secrets.VPS_KEY }}
+        script: |
+          cd /root/opt/restaurante_backend_iii_manana
+          
+          # 1. Creamos el archivo de entorno
+          echo -e "${{ secrets.ENV_FILE }}" > .env
+          
+          # 2. Instalamos y Construimos
+          npm install
+          npm run build
+          
+          # 3. Reinicio LIMPIO con PM2 (Sin usar kill manual)
+          # Esto detiene el proceso si existe, lo borra y lo lanza de nuevo con el código nuevo.
+          pm2 stop rest_api || true
+          pm2 delete rest_api || true
+          pm2 start dist/main.js --name rest_api
+          
+          # 4. Guardamos la lista de procesos para que revivan si se reinicia el servidor
+          pm2 save
