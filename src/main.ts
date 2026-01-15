@@ -7,6 +7,17 @@ import { DataSource } from 'typeorm';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  app.enableCors({
+    origin: [
+      'http://localhost:5173', // Vite
+      'http://localhost:3000', // si tu front usa este
+      'https://api-restaurante.nael.live',
+    ],
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true, // si usas cookies/sesión
+  });
+
   app.enableShutdownHooks();
 
   app.useGlobalPipes(
