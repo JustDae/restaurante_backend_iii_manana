@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { AuditLog } from 'src/audit-logs/schemas/audit-log.schema';
+import { AuditLog } from '../../audit-logs/schemas/audit-log.schema';
 
 @Injectable()
 export class AuditInterceptor implements NestInterceptor {

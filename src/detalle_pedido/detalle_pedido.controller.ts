@@ -17,8 +17,8 @@ import { CreateDetallePedidoDto } from './dto/create-detalle_pedido.dto';
 import { UpdateDetallePedidoDto } from './dto/update-detalle_pedido.dto';
 import { Pagination } from 'nestjs-typeorm-paginate';
 import { DetallePedido } from './entities/detalle_pedido.entity';
-import { SuccessResponseDto } from 'src/common/dto/response.dto';
-import { QueryDto } from 'src/common/dto/query.dto';
+import { SuccessResponseDto } from '../common/dto/response.dto';
+import { QueryDto } from '../common/dto/query.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 
