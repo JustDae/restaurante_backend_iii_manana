@@ -5,10 +5,10 @@ import { paginate, Pagination } from 'nestjs-typeorm-paginate';
 import { DetallePedido } from './entities/detalle_pedido.entity';
 import { CreateDetallePedidoDto } from './dto/create-detalle_pedido.dto';
 import { UpdateDetallePedidoDto } from './dto/update-detalle_pedido.dto';
-import { QueryDto } from 'src/common/dto/query.dto';
-import { Pedido } from 'src/pedido/entities/pedido.entity';
-import { Producto } from 'src/productos/entities/producto.entity';
-import { NotificacionesService } from 'src/notificaciones/notificaciones.service';
+import { QueryDto } from '../common/dto/query.dto';
+import { Pedido } from '../pedido/entities/pedido.entity';
+import { Producto } from '../productos/entities/producto.entity';
+import { NotificacionesService } from '../notificaciones/notificaciones.service';
 
 @Injectable()
 export class DetallePedidoService {

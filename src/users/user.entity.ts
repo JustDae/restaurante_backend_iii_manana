@@ -7,7 +7,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { Rol } from '../rol/entities/rol.entity';
-import { Pedido } from 'src/pedido/entities/pedido.entity';
+import { Pedido } from '../pedido/entities/pedido.entity';
 
 @Entity('users')
 export class User {
