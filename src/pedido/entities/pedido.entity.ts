@@ -6,10 +6,10 @@ import {
   JoinColumn,
   OneToMany,
 } from 'typeorm';
-import { Mesa } from 'src/mesa/entities/mesa.entity';
-import { MetodoPago } from 'src/metodo-pago/entities/metodo-pago.entity';
-import { DetallePedido } from 'src/detalle_pedido/entities/detalle_pedido.entity';
-import { User } from 'src/users/user.entity';
+import { Mesa } from '../../mesa/entities/mesa.entity';
+import { MetodoPago } from '../../metodo-pago/entities/metodo-pago.entity';
+import { DetallePedido } from '../../detalle_pedido/entities/detalle_pedido.entity';
+import { User } from '../../users/user.entity'
 
 @Entity('pedido')
 export class Pedido {

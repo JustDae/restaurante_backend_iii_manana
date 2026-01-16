@@ -5,12 +5,11 @@ import { paginate, Pagination } from 'nestjs-typeorm-paginate';
 import { Pedido } from './entities/pedido.entity';
 import { CreatePedidoDto } from './dto/create-pedido.dto';
 import { UpdatePedidoDto } from './dto/update-pedido.dto';
-import { QueryDto } from 'src/common/dto/query.dto';
-import { Mesa } from 'src/mesa/entities/mesa.entity';
-import { MetodoPago } from 'src/metodo-pago/entities/metodo-pago.entity';
-// Importa tu servicio de notificaciones
-import { NotificacionesService } from 'src/notificaciones/notificaciones.service'; 
-import { CreateContenidoDto } from 'src/notificaciones/dto/create-contenido.dto';
+import { QueryDto } from '../common/dto/query.dto';
+import { Mesa } from '../mesa/entities/mesa.entity';
+import { MetodoPago } from '../metodo-pago/entities/metodo-pago.entity';
+import { NotificacionesService } from '../notificaciones/notificaciones.service'; 
+import { CreateContenidoDto } from '../notificaciones/dto/create-contenido.dto'; 
 
 @Injectable()
 export class PedidoService {
