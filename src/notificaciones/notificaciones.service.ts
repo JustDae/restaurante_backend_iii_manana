@@ -6,22 +6,25 @@ import {
   NotificacioneDocument,
 } from './schemas/notificaciones.schema';
 import { CreateNotificacioneDto } from './dto/create-notificacione.dto';
+import { NotificacionesGateway } from './notificaciones.gateway'; 
 
 @Injectable()
 export class NotificacionesService {
   constructor(
     @InjectModel(Notificacione.name)
     private notificacionModel: Model<NotificacioneDocument>,
+    private readonly gateway: NotificacionesGateway,
   ) {}
 
-  create(dto: CreateNotificacioneDto) {
-    return this.notificacionModel.create(dto);
+  async create(dto: CreateNotificacioneDto) {
+    const nuevaNotificacion = await this.notificacionModel.create(dto);
+    this.gateway.enviarNotificacion(nuevaNotificacion);
+    
+    return nuevaNotificacion;
   }
 
   findAllByUsuario(usuarioId: string) {
-    return this.notificacionModel
-      .find({ usuarioId })
-      .sort({ fecha: -1 });
+    return this.notificacionModel.find({ usuarioId }).sort({ fecha: -1 });
   }
 
   marcarComoLeido(id: string) {

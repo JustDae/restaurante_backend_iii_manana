@@ -1,21 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import {
-  paginate,
-  IPaginationOptions,
-  Pagination,
-} from 'nestjs-typeorm-paginate';
-import { Mesa } from './entities/mesa.entity'; // Asegura la ruta
+import { paginate, Pagination } from 'nestjs-typeorm-paginate';
+import { Mesa } from './entities/mesa.entity';
 import { CreateMesaDto } from './dto/create-mesa.dto';
 import { UpdateMesaDto } from './dto/update-mesa.dto';
-
-interface MesaPaginationOptions extends IPaginationOptions {
-  search?: string;
-  searchField?: string;
-  sortBy?: string;
-  sortOrder?: 'ASC' | 'DESC';
-}
+import { QueryDto } from 'src/common/dto/query.dto';
 
 @Injectable()
 export class MesaService {
@@ -28,58 +18,43 @@ export class MesaService {
     try {
       const mesa = this.mesaRepo.create(dto);
       return await this.mesaRepo.save(mesa);
-    } catch (err) {
-      console.error('Error creating mesa:', err);
+    } catch (error) {
+      console.error('Error creating mesa:', error);
       return null;
     }
   }
 
-  async findAll(
-    options: MesaPaginationOptions,
-  ): Promise<Pagination<Mesa> | null> {
+  async findAll(query: QueryDto): Promise<Pagination<Mesa> | null> {
     try {
-      const { search, searchField, sortBy, sortOrder } = options;
       const qb = this.mesaRepo.createQueryBuilder('mesa');
 
-      const allowedSearchFields = ['numero', 'ubicacion'];
-      const allowedSortFields = ['id', 'numero', 'capacidad'];
-
-      if (search && searchField && allowedSearchFields.includes(searchField)) {
-        qb.andWhere(`LOWER(mesa.${searchField}) LIKE :search`, {
-          search: `%${search.toLowerCase()}%`,
-        });
-      } else if (search) {
-        qb.andWhere('LOWER(mesa.numero) LIKE :search', {
-          search: `%${search.toLowerCase()}%`,
+      if (query.search) {
+        qb.where('CAST(mesa.numero AS TEXT) LIKE :search', {
+          search: `%${query.search}%`,
         });
       }
 
-      const orderField =
-        sortBy && allowedSortFields.includes(sortBy) ? sortBy : 'id';
-      const orderDirection: 'ASC' | 'DESC' =
-        sortOrder === 'DESC' ? 'DESC' : 'ASC';
+      qb.orderBy('mesa.numero', 'ASC');
 
-      qb.orderBy(`mesa.${orderField}`, orderDirection);
-
-      return await paginate<Mesa>(qb, {
-        page: options.page,
-        limit: options.limit,
+      return paginate(qb, {
+        page: query.page || 1,
+        limit: query.limit || 10,
       });
-    } catch (err) {
-      console.error('Error finding mesas:', err);
+    } catch (error) {
+      console.error('Error finding mesas:', error);
       return null;
     }
   }
 
   async findOne(id: number): Promise<Mesa | null> {
     try {
+      return await this.mesaRepo.findOne({ where: { id } });
+    } catch (error) {
+      console.error('Error finding mesa:', error);
       return await this.mesaRepo
         .createQueryBuilder('mesa')
         .where('mesa.id = :id', { id })
         .getOne();
-    } catch (err) {
-      console.error('Error finding mesa:', err);
-      return null;
     }
   }
 
@@ -90,8 +65,8 @@ export class MesaService {
 
       Object.assign(mesa, dto);
       return await this.mesaRepo.save(mesa);
-    } catch (err) {
-      console.error('Error updating mesa:', err);
+    } catch (error) {
+      console.error('Error updating mesa:', error);
       return null;
     }
   }
@@ -102,8 +77,8 @@ export class MesaService {
       if (!mesa) return null;
 
       return await this.mesaRepo.remove(mesa);
-    } catch (err) {
-      console.error('Error deleting mesa:', err);
+    } catch (error) {
+      console.error('Error deleting mesa:', error);
       return null;
     }
   }
