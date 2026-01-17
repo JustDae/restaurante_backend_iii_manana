@@ -14,7 +14,6 @@ describe('UsersController', () => {
   let controller: UsersController;
   let service: jest.Mocked<UsersService>;
 
-  // Datos mock base
   const mockUser = {
     id: 'uuid-1',
     username: 'testuser',
@@ -59,7 +58,6 @@ describe('UsersController', () => {
     controller = module.get<UsersController>(UsersController);
     service = module.get(UsersService);
 
-    // Limpiamos los mocks para que el contador de llamadas empiece en 0 en cada test
     jest.clearAllMocks();
   });
 
@@ -86,7 +84,6 @@ describe('UsersController', () => {
       const query: QueryDto = { page: 1, limit: 10 } as any;
       const response = await controller.findAll(query, 'true');
 
-      // Verifica que convierte el string 'true' a booleano true
       expect(service.findAll).toHaveBeenCalledWith(query, true);
       expect(response.success).toBe(true);
       expect(response.data.items.length).toBe(1);
@@ -97,7 +94,6 @@ describe('UsersController', () => {
 
       await controller.findAll(query);
 
-      // Verifica lógica de negocio del controlador
       expect(service.findAll).toHaveBeenCalledWith(
         expect.objectContaining({ limit: 100 }),
         undefined,
@@ -107,7 +103,6 @@ describe('UsersController', () => {
     it('debe lanzar BadRequestException si isActive no es válido', async () => {
       const query: QueryDto = { page: 1, limit: 10 } as any;
 
-      // Debe fallar antes de llamar al servicio
       await expect(controller.findAll(query, 'yes')).rejects.toThrow(
         BadRequestException,
       );
@@ -172,7 +167,6 @@ describe('UsersController', () => {
   });
 
   describe('uploadProfile', () => {
-    // Simulamos el objeto file que viene de Multer
     const mockFile = {
       filename: '123-image.png',
       originalname: 'image.png',

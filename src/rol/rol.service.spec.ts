@@ -1,4 +1,3 @@
-// 1. Mock de librerías externas
 jest.mock('nestjs-typeorm-paginate', () => ({
   paginate: jest.fn(),
 }));
@@ -19,7 +18,6 @@ describe('RolService', () => {
     createQueryBuilder: jest.Mock;
   };
 
-  // Mock del QueryBuilder para TypeORM
   let qb: {
     where: jest.Mock;
     andWhere: jest.Mock;
@@ -35,7 +33,6 @@ describe('RolService', () => {
   };
 
   beforeEach(async () => {
-    // Silenciar errores de consola durante los tests
     jest.spyOn(console, 'error').mockImplementation(() => undefined);
 
     qb = {
@@ -118,7 +115,7 @@ describe('RolService', () => {
 
       expect(qb.andWhere).toHaveBeenCalledWith(
         'LOWER(rol.nombre) LIKE :search',
-        { search: '%admin%' }, // Verifica que lo pasó a minúsculas
+        { search: '%admin%' },
       );
     });
 
@@ -149,10 +146,8 @@ describe('RolService', () => {
 
   describe('update', () => {
     it('debe actualizar el rol si existe', async () => {
-      // 1. Mockear que findOne encuentra el rol (usando qb.getOne)
       qb.getOne.mockResolvedValue({ ...mockRol });
 
-      // 2. Mockear el save
       repo.save.mockResolvedValue({ ...mockRol, nombre: 'SUPER_ADMIN' });
 
       const result = await service.update(1, { nombre: 'SUPER_ADMIN' });

@@ -5,7 +5,7 @@ import { Promocion } from './schemas/promocion.schema';
 
 describe('PromocionesService', () => {
   let service: PromocionesService;
-  let model: any; // Usamos any para facilitar el mock del constructor + estáticos
+  let model: any;
 
   const mockPromocion = {
     _id: 'mongo-id-123',
@@ -18,18 +18,14 @@ describe('PromocionesService', () => {
     activo: true,
   };
 
-  // Objeto para simular el encadenamiento de .exec()
   const mockExec = { exec: jest.fn() };
 
   beforeEach(async () => {
-    // 1. Definimos el Mock del Modelo.
-    // Debe ser una función para soportar "new this.promocionModel()"
     const mockModel = jest.fn().mockImplementation((dto) => ({
       ...dto,
-      save: jest.fn().mockResolvedValue({ ...dto, _id: 'mongo-id-123' }), // Simula el .save() de la instancia
+      save: jest.fn().mockResolvedValue({ ...dto, _id: 'mongo-id-123' }),
     }));
 
-    // 2. Agregamos los métodos estáticos (find, findById, etc.) al mock
     (mockModel as any).find = jest.fn().mockReturnValue(mockExec);
     (mockModel as any).findById = jest.fn().mockReturnValue(mockExec);
     (mockModel as any).findByIdAndDelete = jest.fn().mockReturnValue(mockExec);
@@ -38,7 +34,7 @@ describe('PromocionesService', () => {
       providers: [
         PromocionesService,
         {
-          provide: getModelToken(Promocion.name), // <--- OJO: getModelToken
+          provide: getModelToken(Promocion.name),
           useValue: mockModel,
         },
       ],
