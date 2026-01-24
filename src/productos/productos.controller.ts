@@ -28,11 +28,11 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 
 @Controller('productos')
-@UseGuards(JwtAuthGuard, RolesGuard)
 export class ProductosController {
   constructor(private readonly productosService: ProductosService) {}
 
   @Post()
+  @UseGuards(JwtAuthGuard, RolesGuard)
   async create(@Body() dto: CreateProductoDto) {
     const producto = await this.productosService.create(dto);
     return new SuccessResponseDto('Producto created successfully', producto);
@@ -75,6 +75,7 @@ export class ProductosController {
   }
 
   @Put(':id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
   async update(@Param('id') id: string, @Body() dto: UpdateProductoDto) {
     const producto = await this.productosService.update(+id, dto);
     if (!producto) throw new NotFoundException('Producto no encontrado');
@@ -85,6 +86,7 @@ export class ProductosController {
   }
 
   @Delete(':id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
   async remove(@Param('id') id: string) {
     const producto = await this.productosService.remove(+id);
     if (!producto) throw new NotFoundException('Producto no encontrado');
@@ -92,6 +94,7 @@ export class ProductosController {
   }
 
   @Put(':id/imagen')
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @UseInterceptors(
     FileInterceptor('imagen', {
       storage: diskStorage({
