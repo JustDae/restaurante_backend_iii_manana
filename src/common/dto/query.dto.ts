@@ -29,4 +29,8 @@ export class QueryDto {
   @IsOptional()
   @IsString()
   order?: 'ASC' | 'DESC';
+
+  @IsOptional()
+  @IsString()
+  estado?: string;
 }
