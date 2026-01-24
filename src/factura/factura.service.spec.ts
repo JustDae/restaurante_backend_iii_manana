@@ -1,4 +1,3 @@
-// 1. Mock de librerías externas
 jest.mock('nestjs-typeorm-paginate', () => ({
   paginate: jest.fn(),
 }));
@@ -14,7 +13,6 @@ import { Pedido } from '../pedido/entities/pedido.entity';
 describe('FacturaService', () => {
   let service: FacturaService;
 
-  // Mock Repo Factura
   let facturaRepo: {
     create: jest.Mock;
     save: jest.Mock;
@@ -24,7 +22,6 @@ describe('FacturaService', () => {
     createQueryBuilder: jest.Mock;
   };
 
-  // Mock Repo Pedido
   let pedidoRepo: {
     findOneBy: jest.Mock;
     save: jest.Mock;
@@ -91,24 +88,18 @@ describe('FacturaService', () => {
 
   describe('create', () => {
     it('debe crear factura y actualizar estado del pedido a PAGADO', async () => {
-      // 1. Encuentra el pedido
       pedidoRepo.findOneBy.mockResolvedValue({ ...mockPedido });
-      // 2. No encuentra factura existente (validación pasa)
       facturaRepo.findOneBy.mockResolvedValue(null);
-      // 3. Crea y guarda factura
       facturaRepo.create.mockReturnValue(mockFactura);
       facturaRepo.save.mockResolvedValue(mockFactura);
-      // 4. Guarda el pedido actualizado
       pedidoRepo.save.mockResolvedValue({ ...mockPedido, estado: 'PAGADO' });
 
       const dto = { pedidoId: 10, razonSocial: 'Yo', ruc_cedula: '123' };
       const result = await service.create(dto as any);
 
-      // Verificaciones
       expect(pedidoRepo.findOneBy).toHaveBeenCalledWith({ id: 10 });
       expect(facturaRepo.save).toHaveBeenCalled();
 
-      // CRÍTICO: Verificar que actualizó el pedido
       expect(pedidoRepo.save).toHaveBeenCalledWith(
         expect.objectContaining({ id: 10, estado: 'PAGADO' }),
       );
@@ -124,7 +115,6 @@ describe('FacturaService', () => {
 
     it('debe lanzar BadRequestException si el pedido ya fue facturado', async () => {
       pedidoRepo.findOneBy.mockResolvedValue(mockPedido);
-      // Simulamos que YA existe una factura para este pedido
       facturaRepo.findOneBy.mockResolvedValue({ id: 5 });
 
       await expect(service.create({ pedidoId: 10 } as any)).rejects.toThrow(
@@ -134,7 +124,7 @@ describe('FacturaService', () => {
 
     it('debe lanzar BadRequestException si el total es 0 o negativo', async () => {
       pedidoRepo.findOneBy.mockResolvedValue({ ...mockPedido, total: 0 });
-      facturaRepo.findOneBy.mockResolvedValue(null); // No existe factura previa
+      facturaRepo.findOneBy.mockResolvedValue(null);
 
       await expect(service.create({ pedidoId: 10 } as any)).rejects.toThrow(
         BadRequestException,
@@ -190,8 +180,6 @@ describe('FacturaService', () => {
 
     it('debe lanzar NotFoundException si no encuentra', async () => {
       facturaRepo.findOne.mockResolvedValue(null);
-      // El servicio atrapa la excepción y retorna null en el catch?
-      // Revisando tu código: lanza NotFound dentro del try, va al catch, loguea y retorna null.
       const result = await service.findOne(99);
       expect(result).toBeNull();
     });
@@ -199,7 +187,6 @@ describe('FacturaService', () => {
 
   describe('update', () => {
     it('debe actualizar si existe', async () => {
-      // Mock findOne interno
       facturaRepo.findOne.mockResolvedValue({ ...mockFactura });
       facturaRepo.save.mockResolvedValue({
         ...mockFactura,

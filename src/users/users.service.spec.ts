@@ -20,7 +20,6 @@ import { Rol } from '../rol/entities/rol.entity';
 describe('UsersService', () => {
   let service: UsersService;
 
-  // Mock del Repositorio
   let repo: {
     create: jest.Mock;
     save: jest.Mock;
@@ -28,7 +27,6 @@ describe('UsersService', () => {
     createQueryBuilder: jest.Mock;
   };
 
-  // Mock del QueryBuilder (Vital para tus métodos findOne, findByUsername, etc.)
   let qb: {
     leftJoinAndSelect: jest.Mock;
     addSelect: jest.Mock;
@@ -53,17 +51,15 @@ describe('UsersService', () => {
   } as User;
 
   beforeEach(async () => {
-    // Silenciar console.error para mantener limpios los logs de tests
     jest.spyOn(console, 'error').mockImplementation(() => undefined);
 
-    // Configuración del QueryBuilder mockeado para permitir encadenamiento (return This)
     qb = {
       leftJoinAndSelect: jest.fn().mockReturnThis(),
       addSelect: jest.fn().mockReturnThis(),
       where: jest.fn().mockReturnThis(),
       andWhere: jest.fn().mockReturnThis(),
       orderBy: jest.fn().mockReturnThis(),
-      getOne: jest.fn(), // Este no retorna this, retorna datos
+      getOne: jest.fn(),
     };
 
     repo = {
@@ -85,7 +81,6 @@ describe('UsersService', () => {
 
     service = module.get<UsersService>(UsersService);
 
-    // Limpiar mocks antes de cada test
     jest.clearAllMocks();
     (paginate as jest.Mock).mockReset();
     (bcrypt.hash as jest.Mock).mockReset();
@@ -110,12 +105,11 @@ describe('UsersService', () => {
 
       const result = await service.create(createUserDto);
 
-      // Verificaciones
       expect(bcrypt.hash).toHaveBeenCalledWith('123', 10);
       expect(repo.create).toHaveBeenCalledWith({
         ...createUserDto,
         password: 'hashed-123',
-        rol: { id: 1 }, // Verifica que mapeaste el rolId
+        rol: { id: 1 },
       });
       expect(repo.save).toHaveBeenCalled();
       expect(result?.password).toBe('hashed-123');
@@ -138,7 +132,7 @@ describe('UsersService', () => {
         limit: 10,
         search: 'Admin',
         searchField: 'rol',
-        sort: 'rol', // Ordenar por rol
+        sort: 'rol',
         order: 'DESC' as any,
       };
 
@@ -155,26 +149,21 @@ describe('UsersService', () => {
 
       (paginate as jest.Mock).mockResolvedValue(paginatedResult);
 
-      const result = await service.findAll(queryDto, true); // isActive = true
+      const result = await service.findAll(queryDto, true);
 
-      // Validar construcción del QueryBuilder
       expect(repo.createQueryBuilder).toHaveBeenCalledWith('user');
       expect(qb.leftJoinAndSelect).toHaveBeenCalledWith('user.rol', 'rol');
 
-      // Validar isActive
       expect(qb.andWhere).toHaveBeenCalledWith('user.isActive = :isActive', {
         isActive: true,
       });
 
-      // Validar búsqueda por Rol
       expect(qb.andWhere).toHaveBeenCalledWith('rol.nombre ILIKE :search', {
         search: '%Admin%',
       });
 
-      // Validar ordenamiento por Rol
       expect(qb.orderBy).toHaveBeenCalledWith('rol.nombre', 'DESC');
 
-      // Validar paginación
       expect(paginate).toHaveBeenCalledWith(qb, { page: 1, limit: 10 });
       expect(result).toEqual(paginatedResult);
     });
@@ -233,7 +222,6 @@ describe('UsersService', () => {
 
   describe('update', () => {
     it('debe retornar null si el usuario no existe', async () => {
-      // Simulamos que findOne (que usa qb.getOne) retorna null
       qb.getOne.mockResolvedValue(null);
 
       const result = await service.update('uuid-99', {});
@@ -241,10 +229,8 @@ describe('UsersService', () => {
     });
 
     it('debe actualizar password y rol si se envían', async () => {
-      // 1. Mockear que el usuario existe
       qb.getOne.mockResolvedValue({ ...mockUser });
 
-      // 2. Mockear hash y guardado
       (bcrypt.hash as jest.Mock).mockResolvedValue('new-hash');
       repo.save.mockResolvedValue({
         ...mockUser,

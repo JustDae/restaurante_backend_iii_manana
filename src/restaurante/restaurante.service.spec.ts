@@ -7,7 +7,6 @@ import { BadRequestException, NotFoundException } from '@nestjs/common';
 describe('RestauranteService', () => {
   let service: RestauranteService;
 
-  // Mock del repositorio (Sin QueryBuilder esta vez, porque tu servicio no lo usa)
   let repo: {
     count: jest.Mock;
     create: jest.Mock;
@@ -27,7 +26,6 @@ describe('RestauranteService', () => {
   };
 
   beforeEach(async () => {
-    // Silenciar consola para errores controlados
     jest.spyOn(console, 'error').mockImplementation(() => undefined);
 
     repo = {
@@ -55,7 +53,6 @@ describe('RestauranteService', () => {
 
   describe('create', () => {
     it('debe crear el restaurante si no existe ninguno previamente', async () => {
-      // Simulamos que hay 0 restaurantes
       repo.count.mockResolvedValue(0);
       repo.create.mockReturnValue(mockRestaurante);
       repo.save.mockResolvedValue(mockRestaurante);
@@ -77,7 +74,6 @@ describe('RestauranteService', () => {
     });
 
     it('debe lanzar BadRequestException si YA existe un restaurante', async () => {
-      // Simulamos que ya existe 1 restaurante
       repo.count.mockResolvedValue(1);
 
       await expect(service.create({ name: 'Otro' } as any)).rejects.toThrow(

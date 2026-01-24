@@ -20,10 +20,19 @@ import { NotificacionesModule } from './notificaciones/notificaciones.module';
 import { ResenasModule } from './resenas/resenas.module';
 import { PromocionesModule } from './promociones/promociones.module';
 
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
+
 @Module({
   imports: [
     MongooseModule.forRoot('mongodb://localhost:27017/restaurante_db'),
     ConfigModule.forRoot({ isGlobal: true }),
+
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'public'),
+      serveRoot: '/',
+    }),
+
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DB_HOST,

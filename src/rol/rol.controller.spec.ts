@@ -80,7 +80,6 @@ describe('RolController', () => {
       const query = { page: 1, limit: 500 };
       await controller.findAll(query as any);
 
-      // Verifica que el controlador modificó el objeto query antes de llamar al servicio
       expect(service.findAll).toHaveBeenCalledWith(
         expect.objectContaining({ limit: 100 }),
       );
