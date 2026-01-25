@@ -78,7 +78,7 @@ export class FacturaService {
 
       qb.orderBy('factura.id', 'DESC');
 
-      return paginate(qb, {
+      return await paginate(qb, {
         page: query.page || 1,
         limit: query.limit || 10,
       });
