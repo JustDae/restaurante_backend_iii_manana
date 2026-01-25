@@ -12,7 +12,6 @@ import {
   UseInterceptors,
   UploadedFile,
   InternalServerErrorException,
-  UseGuards,
 } from '@nestjs/common';
 import { ProductosService } from './productos.service';
 import { CreateProductoDto } from './dto/create-producto.dto';
@@ -24,17 +23,35 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { QueryDto } from '../common/dto/query.dto';
 import { extname } from 'path';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { RolesGuard } from '../auth/guards/roles.guard';
+
+const multerConfig = {
+  storage: diskStorage({
+    destination: './public/productos',
+    filename: (req, file, cb) => {
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+      cb(null, uniqueSuffix + extname(file.originalname));
+    },
+  }),
+  fileFilter: (req, file, cb) => {
+    if (!file.mimetype.match(/\/(jpg|jpeg|png)$/)) {
+      return cb(new BadRequestException('Solo se permiten archivos JPG o PNG'), false);
+    }
+    cb(null, true);
+  },
+};
 
 @Controller('productos')
-@UseGuards(JwtAuthGuard, RolesGuard)
 export class ProductosController {
   constructor(private readonly productosService: ProductosService) {}
 
   @Post()
-  async create(@Body() dto: CreateProductoDto) {
-    const producto = await this.productosService.create(dto);
+  @UseInterceptors(FileInterceptor('image', multerConfig))
+  async create(
+    @Body() dto: CreateProductoDto,
+    @UploadedFile() file?: Express.Multer.File,
+  ) {
+    const filename = file ? file.filename : undefined;
+    const producto = await this.productosService.create({ ...dto, imageUrl: filename });
     return new SuccessResponseDto('Producto created successfully', producto);
   }
 
@@ -75,8 +92,16 @@ export class ProductosController {
   }
 
   @Put(':id')
-  async update(@Param('id') id: string, @Body() dto: UpdateProductoDto) {
-    const producto = await this.productosService.update(+id, dto);
+  @UseInterceptors(FileInterceptor('image', multerConfig))
+  async update(
+    @Param('id') id: string, 
+    @Body() dto: UpdateProductoDto,
+    @UploadedFile() file?: Express.Multer.File,
+  ) {
+    const updateData = { ...dto } as any;
+    if (file) updateData['imageUrl'] = file.filename;
+
+    const producto = await this.productosService.update(+id, updateData);
     if (!producto) throw new NotFoundException('Producto no encontrado');
     return new SuccessResponseDto(
       'Producto actualizado exitosamente',
@@ -92,27 +117,7 @@ export class ProductosController {
   }
 
   @Put(':id/imagen')
-  @UseInterceptors(
-    FileInterceptor('imagen', {
-      storage: diskStorage({
-        destination: './public/productos',
-        filename: (req, file, cb) => {
-          const uniqueSuffix =
-            Date.now() + '-' + Math.round(Math.random() * 1e9);
-          cb(null, uniqueSuffix + extname(file.originalname));
-        },
-      }),
-      fileFilter: (req, file, cb) => {
-        if (!file.mimetype.match(/\/(jpg|jpeg|png)$/)) {
-          return cb(
-            new BadRequestException('Solo se permiten archivos JPG o PNG'),
-            false,
-          );
-        }
-        cb(null, true);
-      },
-    }),
-  )
+  @UseInterceptors(FileInterceptor('imagen', multerConfig))
   async uploadImage(
     @Param('id') id: string,
     @UploadedFile() file: Express.Multer.File,
