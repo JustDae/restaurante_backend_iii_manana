@@ -9,13 +9,16 @@ export class Producto {
   @Column()
   nombre: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'text', nullable: true })
   descripcion: string;
 
   @Column('decimal')
   precio: number;
 
-  @Column({ nullable: true })
+  @Column({type: 'varchar', nullable: true })
+  imageUrl: string | null;
+
+  @Column({ type: 'boolean', default: true, nullable: true })
   estado: boolean;
 
   @ManyToOne(() => Category, (category) => category.productos, {
