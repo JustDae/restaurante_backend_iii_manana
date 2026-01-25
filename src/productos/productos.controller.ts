@@ -110,6 +110,7 @@ export class ProductosController {
   }
 
   @Delete(':id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
   async remove(@Param('id') id: string) {
     const producto = await this.productosService.remove(+id);
     if (!producto) throw new NotFoundException('Producto no encontrado');
