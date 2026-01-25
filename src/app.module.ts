@@ -29,7 +29,7 @@ import { join } from 'path';
     ConfigModule.forRoot({ isGlobal: true }),
 
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'public'),
+      rootPath: join(process.cwd(), 'public'),
       serveRoot: '/',
     }),
 
