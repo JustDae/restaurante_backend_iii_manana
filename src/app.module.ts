@@ -30,7 +30,7 @@ import { join } from 'path';
 
     ServeStaticModule.forRoot({
       rootPath: join(process.cwd(), 'public'),
-      serveRoot: '/',
+      serveRoot: '/uploads',
     }),
 
     TypeOrmModule.forRoot({
