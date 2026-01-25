@@ -2,9 +2,8 @@ import {
   IsString,
   IsNumber,
   IsOptional,
-  IsBoolean,
-  IsUUID,
 } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class CreateProductoDto {
   @IsString()
@@ -14,13 +13,14 @@ export class CreateProductoDto {
   @IsOptional()
   descripcion?: string;
 
+  @Type(() => Number)
   @IsNumber()
   precio: number;
 
-  @IsBoolean()
   @IsOptional()
-  estado?: boolean;
+  categoryId?: string;
 
-  @IsUUID()
-  categoryId: string;
+  @IsString()
+  @IsOptional()
+  imageUrl?: string | null;
 }
