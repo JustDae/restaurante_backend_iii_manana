@@ -12,6 +12,7 @@ import {
   UseInterceptors,
   UploadedFile,
   InternalServerErrorException,
+  UseGuards,
 } from '@nestjs/common';
 import { ProductosService } from './productos.service';
 import { CreateProductoDto } from './dto/create-producto.dto';
@@ -23,6 +24,8 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { QueryDto } from '../common/dto/query.dto';
 import { extname } from 'path';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
 
 const multerConfig = {
   storage: diskStorage({
