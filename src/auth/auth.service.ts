@@ -51,7 +51,10 @@ export class AuthService {
       sub: user.id,
       id: user.id,
       username: user.username,
-      rol: user.rol,
+      rol: {
+        id: 4,
+        nombre: 'CLIENTE',
+      },
     };
 
     return this.jwtService.sign(payload);

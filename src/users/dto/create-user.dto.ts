@@ -21,5 +21,5 @@ export class CreateUserDto {
 
   @IsNumber()
   @IsOptional()
-  rolId: number;
+  rolId?: number;
 }
