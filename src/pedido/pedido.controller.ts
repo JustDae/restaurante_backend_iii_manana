@@ -18,10 +18,10 @@ import { CreatePedidoDto } from './dto/create-pedido.dto';
 import { UpdatePedidoDto } from './dto/update-pedido.dto';
 import { Pagination } from 'nestjs-typeorm-paginate';
 import { Pedido } from './entities/pedido.entity';
-import { SuccessResponseDto } from 'src/common/dto/response.dto';
-import { QueryDto } from 'src/common/dto/query.dto';
-import { AuditInterceptor } from 'src/common/interceptors/audit.interceptor';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { SuccessResponseDto } from '../common/dto/response.dto';
+import { QueryDto } from '../common/dto/query.dto';
+import { AuditInterceptor } from '../common/interceptors/audit.interceptor';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @Controller('pedidos')
 @UseGuards(JwtAuthGuard)

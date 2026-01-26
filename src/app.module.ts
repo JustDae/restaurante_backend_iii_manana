@@ -29,8 +29,8 @@ import { join } from 'path';
     ConfigModule.forRoot({ isGlobal: true }),
 
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'public'),
-      serveRoot: '/',
+      rootPath: join(process.cwd(), 'public'),
+      serveRoot: '/uploads',
     }),
 
     TypeOrmModule.forRoot({

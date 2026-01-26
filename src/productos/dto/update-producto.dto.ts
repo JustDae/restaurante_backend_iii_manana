@@ -3,8 +3,8 @@ import {
   IsNumber,
   IsOptional,
   IsBoolean,
-  IsUUID,
 } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class UpdateProductoDto {
   @IsString()
@@ -15,6 +15,7 @@ export class UpdateProductoDto {
   @IsOptional()
   descripcion?: string;
 
+  @Type(() => Number)
   @IsNumber()
   @IsOptional()
   precio?: number;
@@ -23,6 +24,10 @@ export class UpdateProductoDto {
   @IsOptional()
   estado?: boolean;
 
-  @IsUUID()
-  categoryId: string;
+  @IsOptional()
+  categoryId?: string;
+
+  @IsString()
+  @IsOptional()
+  imageUrl?: string | null;
 }
