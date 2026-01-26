@@ -27,7 +27,7 @@ export class AuthService {
         sub: user.id,
         id: user.id,
         username: user.username,
-        rolId: user.rol?.id,
+        rolId: user.rol,
       };
 
       return this.jwtService.sign(payload);
@@ -51,7 +51,7 @@ export class AuthService {
       sub: user.id,
       id: user.id,
       username: user.username,
-      rolId: user.rol?.id,
+      rolId: user.rol,
     };
 
     return this.jwtService.sign(payload);
