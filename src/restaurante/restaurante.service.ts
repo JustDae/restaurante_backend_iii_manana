@@ -48,4 +48,10 @@ export class RestauranteService {
     const restaurante = await this.findOne(id);
     return await this.restauranteRepo.remove(restaurante);
   }
+
+  async updateLogo(id: number, filename: string) {
+    const restaurante = await this.findOne(id);
+    restaurante.logo = filename;
+    return await this.restauranteRepo.save(restaurante);
+  }
 }
