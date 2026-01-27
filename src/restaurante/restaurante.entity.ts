@@ -19,4 +19,7 @@ export class Restaurante {
 
   @Column({ nullable: true })
   slogan: string;
+
+  @Column({ nullable: true })
+  logo: string;
 }
