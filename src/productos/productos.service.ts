@@ -21,15 +21,13 @@ export class ProductosService {
   async create(dto: CreateProductoDto): Promise<Producto | null> {
     try {
       const { categoryId, ...restoDto } = dto;
-
       const producto = this.productoRepo.create({
         ...restoDto,
         category: { id: categoryId },
       });
-
-      return await this.productoRepo.save(producto);
+      const guardado = await this.productoRepo.save(producto);
+      return await this.findOne(guardado.id);
     } catch (error) {
-      console.error('Error creating producto:', error);
       return null;
     }
   }
@@ -62,7 +60,6 @@ export class ProductosService {
 
       return paginate<Producto>(qb, options);
     } catch (error) {
-      console.error('Error finding productos:', error);
       return null;
     }
   }
@@ -75,7 +72,6 @@ export class ProductosService {
         .where('producto.id = :id', { id })
         .getOne();
     } catch (error) {
-      console.error('Error finding producto:', error);
       return null;
     }
   }
@@ -85,15 +81,16 @@ export class ProductosService {
       const producto = await this.findOne(id);
       if (!producto) return null;
 
-      Object.assign(producto, dto);
+      const { categoryId, ...restoDto } = dto;
+      Object.assign(producto, restoDto);
 
-      if (dto.categoryId) {
-        producto.category = { id: dto.categoryId } as any;
+      if (categoryId) {
+        producto.category = { id: categoryId } as any;
       }
 
-      return await this.productoRepo.save(producto);
+      await this.productoRepo.save(producto);
+      return await this.findOne(id);
     } catch (error) {
-      console.error('Error updating producto:', error);
       return null;
     }
   }
@@ -102,10 +99,8 @@ export class ProductosService {
     try {
       const producto = await this.findOne(id);
       if (!producto) return null;
-
       return await this.productoRepo.remove(producto);
     } catch (error) {
-      console.error('Error deleting producto:', error);
       return null;
     }
   }
@@ -114,12 +109,10 @@ export class ProductosService {
     try {
       const producto = await this.findOne(id);
       if (!producto) return null;
-
       (producto as any).imagen = filename;
-
-      return await this.productoRepo.save(producto);
+      await this.productoRepo.save(producto);
+      return await this.findOne(id);
     } catch (error) {
-      console.error('Error updating product image:', error);
       return null;
     }
   }
