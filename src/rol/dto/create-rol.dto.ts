@@ -6,8 +6,8 @@ export class CreateRolDto {
   nombre: string;
 
   @IsString()
-  @IsNotEmpty()
-  descripcion: string;
+  @IsOptional()
+  descripcion?: string;
 
   @IsBoolean()
   @IsOptional()
