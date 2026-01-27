@@ -21,10 +21,12 @@ export class UsersService {
     try {
       const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
 
+      const rolIdDefecto = createUserDto.rolId ?? 4;
+
       const user = this.userRepository.create({
         ...createUserDto,
         password: hashedPassword,
-        rol: { id: createUserDto.rolId } as Rol,
+        rol: { id: rolIdDefecto } as Rol,
       });
 
       return await this.userRepository.save(user);

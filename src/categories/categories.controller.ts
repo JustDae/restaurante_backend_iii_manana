@@ -9,20 +9,16 @@ import {
   Query,
   NotFoundException,
   InternalServerErrorException,
-  UseGuards,
 } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { Pagination } from 'nestjs-typeorm-paginate';
 import { Category } from './category.entity';
-import { SuccessResponseDto } from 'src/common/dto/response.dto';
-import { QueryDto } from 'src/common/dto/query.dto';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { RolesGuard } from '../auth/guards/roles.guard';
+import { SuccessResponseDto } from '../common/dto/response.dto';
+import { QueryDto } from '../common/dto/query.dto';
 
 @Controller('categories')
-@UseGuards(JwtAuthGuard, RolesGuard)
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
