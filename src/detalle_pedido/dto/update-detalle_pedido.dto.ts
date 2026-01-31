@@ -1,7 +1,8 @@
 import { IsString, IsOptional, IsInt, IsPositive } from 'class-validator';
 export class UpdateDetallePedidoDto {
   @IsOptional()
-  @IsString()
+  @IsInt()
+  @IsPositive()
   productoId?: number;
 
   @IsInt()

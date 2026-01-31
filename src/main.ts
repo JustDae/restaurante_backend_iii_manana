@@ -16,6 +16,7 @@ async function bootstrap() {
   app.enableCors({
     origin: [
       'http://localhost:5173',
+      'http://127.0.0.1:5173',
       'http://localhost:3000',
       'https://restaurante-app.nael.live',
       'https://api-restaurante.nael.live',
